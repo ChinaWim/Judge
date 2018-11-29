@@ -1,5 +1,7 @@
 package com.oj.judge.task;
 
+import com.oj.judge.common.StatusConst;
+import com.oj.judge.pojo.TestCaseResult;
 import com.oj.judge.utils.StreamUtil;
 
 import java.time.Duration;
@@ -12,7 +14,7 @@ import java.util.concurrent.*;
  * @author m969130721@163.com
  * @date 18-11-27 下午7:20
  */
-public class OutputTask implements Callable {
+public class OutputTask implements Callable<TestCaseResult> {
 
     private Process process;
 
@@ -22,13 +24,13 @@ public class OutputTask implements Callable {
     }
 
     @Override
-    public Map call() throws Exception {
-        HashMap<String,Object> result = new HashMap<>();
+    public TestCaseResult call() throws Exception {
         Instant startTime = Instant.now();
-        String outPut = StreamUtil.getOutPut(process.getInputStream());
+        String output = StreamUtil.getOutPut(process.getInputStream());
         Instant endTime = Instant.now();
-        result.put("time",Duration.between(startTime,endTime).toMillis());
-        result.put("result",outPut);
+        TestCaseResult result = new TestCaseResult();
+        result.setTime(Duration.between(startTime,endTime).toMillis());
+        result.setOutput(output);
         return result;
     }
 

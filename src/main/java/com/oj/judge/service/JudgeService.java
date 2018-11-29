@@ -1,11 +1,13 @@
 package com.oj.judge.service;
 
+import com.oj.judge.pojo.ProblemResult;
 import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author m969130721@163.com
@@ -16,8 +18,6 @@ public interface JudgeService {
 
     String compile(HttpSession session,String sourceCode,String type,Integer problemId) throws IOException;
 
-    List<Map> execute(HttpSession session, String type, Integer problemId) throws IOException;
-
-    String checkAnswer(Integer problemId);
+    ProblemResult execute(HttpSession session, String type, Integer problemId) throws IOException;
 
 }

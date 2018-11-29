@@ -7,27 +7,40 @@ import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
  * @author m969130721@163.com
  * @date 18-11-27 下午3:58
  */
-public interface StatusConst {
+public enum StatusConst {
+    COMPILE_SUCCESS(0, "编译成功"),
 
-    String COMPILE_SUCCESS = "编译成功";
+    COMPILE_ERROR(-1,"编译错误"),
 
-    String COMPILE_ERROR = "编译错误";
+    ACCEPTED(1,"通过"),
 
-    String ACCEPTED = "通过";
+    PRESENTATION_ERROR(-2,"格式错误"),
 
-    String PRESENTATION_ERROR = "格式错误";
+    WRONG_ANSWER(-3,"答案不对"),
 
-    String WRONG_ANSWER = "答案不对";
+    TIME_LIMIT_EXCEEDED(-4,"超时"),
 
-    String TIME_LIMIT_EXCEEDED = "超时";
+    MEMORY_LIMIT_EXCEEDED(-5,"内存超过限制"),
 
-    String MEMORY_LIMIT_EXCEEDED = "内存超过限制";
+    RUNTIME_ERROR(-6,"运行时错误"),
 
-    String RUNTIME_ERROR = "运行时错误";
+    OUTPUT_LIMIT_EXCEEDED(-7,"输出文件超限"),
 
-    String OUTPUT_LIMIT_EXCEEDED = "输出文件超限";
+    SYSTEM_ERROR(-8,"系统错误");
 
-    String SYSTEM_ERROR = "系统错误";
+    StatusConst(Integer status,String desc) {
+        this.status = status;
+        this.desc = desc;
+    }
+    private Integer status;
 
+    private String desc;
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
 }

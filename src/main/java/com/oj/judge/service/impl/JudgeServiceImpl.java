@@ -3,6 +3,8 @@ package com.oj.judge.service.impl;
 import com.oj.judge.common.CmdConst;
 import com.oj.judge.common.StatusConst;
 import com.oj.judge.controller.JudgeController;
+import com.oj.judge.pojo.Problem;
+import com.oj.judge.pojo.ProblemResult;
 import com.oj.judge.service.JudgeService;
 import com.oj.judge.task.OutputTask;
 import com.oj.judge.task.TestCaseInputTask;
@@ -33,6 +35,11 @@ public class JudgeServiceImpl implements JudgeService {
 
     private static Runtime runtime = Runtime.getRuntime();
 
+
+    //当一个用户提交同一个题目很多次答案时候，由于并发问题，可能在执行编译的时候，文件夹被另一个线程删除了，发出NotFoundException
+    //执行程序同样存在这个问题
+    //解决办法一：uuid文件，只删除文件，不删除文件夹
+    //解决办法二：限制用户提交同一个题目５秒一次
     @Override
     public String compile(HttpSession session, String sourceCode, String type, Integer problemId) throws IOException {
         String username = session.getId();
@@ -45,7 +52,7 @@ public class JudgeServiceImpl implements JudgeService {
         String result = StreamUtil.getOutPut(process.getErrorStream());
         //todo update database
         if (result == null || "".equals(result)) {
-            return StatusConst.COMPILE_SUCCESS;
+            return StatusConst.COMPILE_SUCCESS.getDesc();
         } else {
             FileUtil.deleteFile(userDirPath);
         }
@@ -53,24 +60,30 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
-    public List<Map> execute(HttpSession session, String type, Integer problemId) throws IOException {
+    public ProblemResult execute(HttpSession session, String type, Integer problemId) throws IOException {
         String username = session.getId();
         String problemDirPath = fileDirPath + "/" + problemId;
         String inputFileDirPath = problemDirPath + "/input";
+        String outputFileDirPath = problemDirPath + "/output";
         String userDirPath = problemDirPath + "/" + username;
+        //demo
+        Problem problem = new Problem();
+        problem.setMemory(1000L);
+        problem.setTime(3000L);
+        problem.setQuestion("1+1");
 
-        List<Map> resultList = new ArrayList<>();
-        //执行输入，输出
+
+        ProblemResult result = new ProblemResult();
+        //执行输入和输出
         File inputFileDir = new File(inputFileDirPath);
         File[] inputFiles = inputFileDir.listFiles();
+
         CountDownLatch countDownLatch = new CountDownLatch(inputFiles.length);
-
-       ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
-
-        for (File file : inputFiles) {
+        ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
+        for (File inputFile : inputFiles) {
             ProcessBuilder builder = CmdConst.executeCmd(type, userDirPath);
             Process process = builder.start();
-            TestCaseInputTask testCaseInputTask = new TestCaseInputTask(file, process, resultList, countDownLatch);
+            TestCaseInputTask testCaseInputTask = new TestCaseInputTask(problem,inputFile,outputFileDirPath, process, result, countDownLatch);
             executorService.execute(testCaseInputTask);
         }
         try {
@@ -81,13 +94,7 @@ public class JudgeServiceImpl implements JudgeService {
             logger.error(e.getMessage());
         }
         FileUtil.deleteFile(userDirPath);
-        return resultList;
-    }
-
-    @Override
-    public String checkAnswer(Integer problemId) {
-
-        return "检查成功";
+        return result;
     }
 
 

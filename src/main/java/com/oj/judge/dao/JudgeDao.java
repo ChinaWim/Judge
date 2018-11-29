@@ -1,11 +1,9 @@
 package com.oj.judge.dao;
 
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.*;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.*;
 
 /**
  * @author m969130721@163.com
@@ -13,6 +11,39 @@ import java.util.concurrent.Executors;
  */
 public class JudgeDao {
 
+    private static ExecutorService executorService =
+            new ThreadPoolExecutor(2, 40, 1, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(40));
 
+
+    public static void main(String[] args) {
+        JudgeDao dao = new JudgeDao();
+        dao.executorService.execute(() -> {
+            System.out.println("hello world");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+//        dao.executorService.shutdown();
+        dao.executorService.execute(() -> {
+            System.out.println("hello world");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        dao.executorService.shutdown();
+       /* dao.executorService.execute(() -> {
+            System.out.println("hello world");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });*/
+
+    }
 
 }
