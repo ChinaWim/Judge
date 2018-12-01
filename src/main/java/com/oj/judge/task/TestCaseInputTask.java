@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,8 +57,10 @@ public class TestCaseInputTask implements Runnable {
             StreamUtil.setInPut(outputStream, inputFile.getPath());
         } catch (IOException e) {
             //源文件没有输入流
-            logger.error(e.getMessage());
+            logger.error("源文件没有输入流: " + e.getMessage());
         }
+
+
         TreeMap<Integer, TestCaseResult> resultMap = problemResult.getResultTreeMap();
         String fileName = inputFile.getName();
         Integer testCaseNum = Integer.parseInt(fileName.substring(0, fileName.lastIndexOf(".")));
@@ -67,7 +71,7 @@ public class TestCaseInputTask implements Runnable {
 
         //阻塞
         try {
-            TestCaseResult testCaseResult = task.get(problem.getTime() + 1, TimeUnit.SECONDS);
+            TestCaseResult testCaseResult = task.get(problem.getTime() + 500, TimeUnit.MILLISECONDS);
             testCaseResult.setId(testCaseNum);
             //checkAnswer
             File outputFile = new File(outputFileDirPath + "/" + fileName);
@@ -75,7 +79,6 @@ public class TestCaseInputTask implements Runnable {
 
             resultMap.put(testCaseNum, testCaseResult);
         } catch (TimeoutException e) {
-            e.printStackTrace();
             //超时　update database
             process.destroyForcibly();
             logger.error(StatusConst.TIME_LIMIT_EXCEEDED.getDesc());
@@ -116,7 +119,7 @@ public class TestCaseInputTask implements Runnable {
             } else {
                 if (formatOutput.equals(formatAnswerOutput)) {
                     testCaseResult.setStatus(StatusConst.PRESENTATION_ERROR);
-                }else {
+                } else {
                     testCaseResult.setStatus(StatusConst.WRONG_ANSWER);
                 }
             }
@@ -124,6 +127,7 @@ public class TestCaseInputTask implements Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
+            testCaseResult.setStatus(StatusConst.SYSTEM_ERROR);
             logger.error(e.getMessage());
         }
 
@@ -134,6 +138,7 @@ public class TestCaseInputTask implements Runnable {
         string = string.replace(" ", "");
         string = string.replace("   ", "");
         string = string.replace("\n", "");
+        string = string.replace("\r", "");
         return string;
     }
 

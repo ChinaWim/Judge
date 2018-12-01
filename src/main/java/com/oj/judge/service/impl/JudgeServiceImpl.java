@@ -40,17 +40,25 @@ public class JudgeServiceImpl implements JudgeService {
     //执行程序同样存在这个问题
     //解决办法一：uuid文件，只删除文件，不删除文件夹
     //解决办法二：限制用户提交同一个题目５秒一次
+    //解决办法三：文件夹＋时间戳，推荐
+
     @Override
-    public String compile(HttpSession session, String sourceCode, String type, Integer problemId) throws IOException {
+    public String compile(HttpSession session, String sourceCode, String type, Integer problemId) {
         String username = session.getId();
         String problemDirPath = fileDirPath + "/" + problemId;
         String userDirPath = problemDirPath + "/" + username;
 
         FileUtil.saveFile(sourceCode, userDirPath + "/Main." + type);
-        Process process = null;
-        process = runtime.exec(CmdConst.compileCmd(type, userDirPath));
-        String result = StreamUtil.getOutPut(process.getErrorStream());
-        //todo update database
+
+        String result = null;
+        try {
+            Process process = runtime.exec(CmdConst.compileCmd(type, userDirPath));
+            result = StreamUtil.getOutPut(process.getErrorStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
         if (result == null || "".equals(result)) {
             return StatusConst.COMPILE_SUCCESS.getDesc();
         } else {
@@ -60,7 +68,9 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
-    public ProblemResult execute(HttpSession session, String type, Integer problemId) throws IOException {
+    public ProblemResult execute(HttpSession session, String type, Integer problemId) {
+        //update database 判题中
+
         String username = session.getId();
         String problemDirPath = fileDirPath + "/" + problemId;
         String inputFileDirPath = problemDirPath + "/input";
@@ -69,7 +79,7 @@ public class JudgeServiceImpl implements JudgeService {
         //demo
         Problem problem = new Problem();
         problem.setMemory(1000L);
-        problem.setTime(3000L);
+        problem.setTime(2000L);
         problem.setQuestion("1+1");
 
 
@@ -77,19 +87,19 @@ public class JudgeServiceImpl implements JudgeService {
         //执行输入和输出
         File inputFileDir = new File(inputFileDirPath);
         File[] inputFiles = inputFileDir.listFiles();
-
         CountDownLatch countDownLatch = new CountDownLatch(inputFiles.length);
         ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
-        for (File inputFile : inputFiles) {
-            ProcessBuilder builder = CmdConst.executeCmd(type, userDirPath);
-            Process process = builder.start();
-            TestCaseInputTask testCaseInputTask = new TestCaseInputTask(problem,inputFile,outputFileDirPath, process, result, countDownLatch);
-            executorService.execute(testCaseInputTask);
-        }
         try {
+            for (File inputFile : inputFiles) {
+                ProcessBuilder builder = CmdConst.executeCmd(type, userDirPath);
+                Process process = builder.start();
+                TestCaseInputTask testCaseInputTask = new TestCaseInputTask(problem, inputFile, outputFileDirPath, process, result, countDownLatch);
+                executorService.execute(testCaseInputTask);
+            }
             executorService.shutdown();
             countDownLatch.await();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
+            //执行脚本错误或闭锁中断Exception update database
             e.printStackTrace();
             logger.error(e.getMessage());
         }

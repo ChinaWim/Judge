@@ -16,8 +16,8 @@ import java.util.TreeMap;
 public interface JudgeService {
 
 
-    String compile(HttpSession session,String sourceCode,String type,Integer problemId) throws IOException;
+    String compile(HttpSession session,String sourceCode,String type,Integer problemId);
 
-    ProblemResult execute(HttpSession session, String type, Integer problemId) throws IOException;
+    ProblemResult execute(HttpSession session, String type, Integer problemId);
 
 }

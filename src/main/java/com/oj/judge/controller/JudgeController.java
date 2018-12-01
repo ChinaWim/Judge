@@ -30,7 +30,7 @@ public class JudgeController {
     private JudgeService judgeService;
 
     private static ExecutorService executorService =
-            new ThreadPoolExecutor(32, 40, 15, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(40));
+            new ThreadPoolExecutor(32, 40, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(400));
 
     @RequestMapping("/submit")
     public Object submit(HttpSession session, String sourceCode, String type, Integer problemId) throws IOException {
@@ -39,22 +39,24 @@ public class JudgeController {
         }
         String result = judgeService.compile(session, sourceCode, type, problemId);
         if (result.equals(StatusConst.COMPILE_SUCCESS.getDesc())) {
-            executorService.execute(() -> {
-                try {
+            try {
+                executorService.execute(() -> {
                     ProblemResult problemResult = judgeService.execute(session, type, problemId);
                     problemResult.getResultTreeMap().entrySet().stream().forEach((entry -> {
                         TestCaseResult testCaseResult = entry.getValue();
-                        logger.info("样例num: "+testCaseResult.getId());
-                        logger.info("状态: "+testCaseResult.getStatus().getDesc());
-                        logger.info("时间: "+testCaseResult.getTime());
-                        logger.info("输出: "+testCaseResult.getOutput());
+                        logger.info("样例num: " + testCaseResult.getId());
+                        logger.info("状态: " + testCaseResult.getStatus().getDesc());
+                        logger.info("时间: " + testCaseResult.getTime());
+                        logger.info("输出: " + testCaseResult.getOutput());
                         logger.info("-------------------------------------------------");
                     }));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    logger.error(e.getMessage());
-                }
-            });
+                });
+            } catch (RejectedExecutionException e) {
+                logger.error(e.getMessage());
+                return "服务器繁忙请稍等";
+            }
+        } else {
+            //update database compile error
         }
         return result;
     }
