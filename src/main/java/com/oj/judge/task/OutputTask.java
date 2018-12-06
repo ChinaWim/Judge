@@ -38,7 +38,7 @@ public class OutputTask implements Callable<TestCaseResult> {
         process.waitFor();
         int exitValue = process.exitValue();
         if (exitValue != 0) {
-            testCaseResult.setStatus(StatusConst.RE);
+            testCaseResult.setStatus(StatusConst.RUNTIME_ERROR);
         }
         return testCaseResult;
     }

@@ -38,7 +38,7 @@ public class JudgeController {
             return "输入不能为空";
         }
         String result = judgeService.compile(session, sourceCode, type, problemId);
-        if (result.equals(StatusConst.CS.getDesc())) {
+        if (result.equals(StatusConst.COMPILE_SUCCESS.getDesc())) {
             try {
                 executorService.execute(() -> {
                     ProblemResult problemResult = judgeService.execute(session, type, problemId);

@@ -60,7 +60,7 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         if (result == null || "".equals(result)) {
-            return StatusConst.CS.getDesc();
+            return StatusConst.COMPILE_SUCCESS.getDesc();
         } else {
             FileUtil.deleteFile(userDirPath);
         }

@@ -8,31 +8,32 @@ import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
  * @date 18-11-27 下午3:58
  */
 public enum StatusConst {
-    //0 wait 1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re 8 wa 200编译成功
-    CS(200, "COMPILE_SUCCESS"),
+    //0 wait 1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re 8 wa  COMPILE_SUCCESS 200编译成功
+    COMPILE_SUCCESS(200, "COMPILE SUCCESS"),
 
-    WAIT(0,"WAIT"),
+    WAIT(0, "WAIT"),
 
-    AC(1,"ACCEPTED"),
+    ACCEPTED(1, "AC"),
 
-    CE(2,"COMPILE_ERROR"),
+    COMPILE_ERROR(2, "CE"),
 
-    PE(3,"PRESENTATION_ERROR"),
+    PRESENTATION_ERROR(3, "PE"),
 
-    TLE(4,"TIME_LIMIT_EXCEEDED"),
+    TIME_LIMIT_EXCEEDED(4, "TLE"),
 
-    ME(5,"MEMORY_LIMIT_EXCEEDED"),
+    MEMORY_LIMIT_EXCEEDED(5, "MLE"),
 
-    SE(6,"SYSTEM_ERROR"),
+    SYSTEM_ERROR(6, "SE"),
 
-    RE(7,"RUNTIME_ERROR"),
+    RUNTIME_ERROR(7, "RE"),
 
-    WA(8,"Wrong Answer");
+    WRONG_ANSWER(8, "WA");
 
-    StatusConst(Integer status,String desc) {
+    StatusConst(Integer status, String desc) {
         this.status = status;
         this.desc = desc;
     }
+
     private Integer status;
 
     private String desc;

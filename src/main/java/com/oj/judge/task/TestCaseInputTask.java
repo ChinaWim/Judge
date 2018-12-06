@@ -72,7 +72,7 @@ public class TestCaseInputTask implements Runnable {
             //计算时间，等待题目秒数 + 800毫秒
             TestCaseResult testCaseResult = task.get(problem.getTime() + 800, TimeUnit.MILLISECONDS);
             testCaseResult.setId(testCaseNum);
-            if (!StatusConst.RE.equals(testCaseResult.getStatus())) {
+            if (!StatusConst.RUNTIME_ERROR.equals(testCaseResult.getStatus())) {
                 //答案校验
                 File outputFile = new File(outputFileDirPath + "/" + fileName);
                 checkAnswer(problem, outputFile, testCaseResult);
@@ -81,16 +81,16 @@ public class TestCaseInputTask implements Runnable {
         } catch (TimeoutException e) {
             //超时　update database
             process.destroyForcibly();
-            logger.error(StatusConst.TLE.getDesc());
+            logger.error(StatusConst.TIME_LIMIT_EXCEEDED.getDesc());
             TestCaseResult testCaseResult = new TestCaseResult();
-            testCaseResult.setStatus(StatusConst.TLE);
+            testCaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED);
             testCaseResult.setId(testCaseNum);
             resultMap.put(testCaseNum, testCaseResult);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.toString());
             TestCaseResult testCaseResult = new TestCaseResult();
-            testCaseResult.setStatus(StatusConst.SE);
+            testCaseResult.setStatus(StatusConst.SYSTEM_ERROR);
             testCaseResult.setId(testCaseNum);
             resultMap.put(testCaseNum, testCaseResult);
         } finally {
@@ -103,7 +103,7 @@ public class TestCaseInputTask implements Runnable {
     private void checkAnswer(Problem problem, File outputFile, TestCaseResult testCaseResult) {
         try {
             if (problem.getTime().longValue() < testCaseResult.getTime().longValue()) {
-                testCaseResult.setStatus(StatusConst.TLE);
+                testCaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED);
                 return;
             }
             /*if (problem.getMemory().longValue() < testCaseResult.getMemory().longValue()) {
@@ -116,18 +116,18 @@ public class TestCaseInputTask implements Runnable {
             String formatAnswerOutput = formatString(answerOutPut);
 
             if (answerOutPut.equals(output)) {
-                testCaseResult.setStatus(StatusConst.AC);
+                testCaseResult.setStatus(StatusConst.ACCEPTED);
             } else {
                 if (formatOutput.equals(formatAnswerOutput)) {
-                    testCaseResult.setStatus(StatusConst.PE);
+                    testCaseResult.setStatus(StatusConst.PRESENTATION_ERROR);
                 } else {
-                    testCaseResult.setStatus(StatusConst.WA);
+                    testCaseResult.setStatus(StatusConst.WRONG_ANSWER);
                 }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            testCaseResult.setStatus(StatusConst.SE);
+            testCaseResult.setStatus(StatusConst.SYSTEM_ERROR);
             logger.error(e.toString());
         }
 
