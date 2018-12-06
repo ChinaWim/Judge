@@ -56,11 +56,11 @@ public class JudgeServiceImpl implements JudgeService {
             result = StreamUtil.getOutPut(process.getErrorStream());
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error(e.toString());
         }
 
         if (result == null || "".equals(result)) {
-            return StatusConst.COMPILE_SUCCESS.getDesc();
+            return StatusConst.CS.getDesc();
         } else {
             FileUtil.deleteFile(userDirPath);
         }
@@ -101,7 +101,7 @@ public class JudgeServiceImpl implements JudgeService {
         } catch (Exception e) {
             //执行脚本错误或闭锁中断Exception update database
             e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error(e.toString());
         }
         FileUtil.deleteFile(userDirPath);
         return result;

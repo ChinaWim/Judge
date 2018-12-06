@@ -45,7 +45,6 @@ public class TestCaseInputTask implements Runnable {
         this.problemResult = problemResult;
         this.countDownLatch = countDownLatch;
         this.problem = problem;
-
     }
 
 
@@ -57,7 +56,7 @@ public class TestCaseInputTask implements Runnable {
             StreamUtil.setInPut(outputStream, inputFile.getPath());
         } catch (IOException e) {
             //源文件没有输入流
-            logger.error("源文件没有输入流: " + e.getMessage());
+            logger.error("源文件没有输入流: " + e.toString());
         }
 
 
@@ -69,28 +68,29 @@ public class TestCaseInputTask implements Runnable {
         FutureTask<TestCaseResult> task = new FutureTask<>(new OutputTask(process));
         new Thread(task).start();
 
-        //阻塞
         try {
-            TestCaseResult testCaseResult = task.get(problem.getTime() + 500, TimeUnit.MILLISECONDS);
+            //计算时间，等待题目秒数 + 800毫秒
+            TestCaseResult testCaseResult = task.get(problem.getTime() + 800, TimeUnit.MILLISECONDS);
             testCaseResult.setId(testCaseNum);
-            //checkAnswer
-            File outputFile = new File(outputFileDirPath + "/" + fileName);
-            checkAnswer(problem, outputFile, testCaseResult);
-
+            if (!StatusConst.RE.equals(testCaseResult.getStatus())) {
+                //答案校验
+                File outputFile = new File(outputFileDirPath + "/" + fileName);
+                checkAnswer(problem, outputFile, testCaseResult);
+            }
             resultMap.put(testCaseNum, testCaseResult);
         } catch (TimeoutException e) {
             //超时　update database
             process.destroyForcibly();
-            logger.error(StatusConst.TIME_LIMIT_EXCEEDED.getDesc());
+            logger.error(StatusConst.TLE.getDesc());
             TestCaseResult testCaseResult = new TestCaseResult();
-            testCaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED);
+            testCaseResult.setStatus(StatusConst.TLE);
             testCaseResult.setId(testCaseNum);
             resultMap.put(testCaseNum, testCaseResult);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error(e.toString());
             TestCaseResult testCaseResult = new TestCaseResult();
-            testCaseResult.setStatus(StatusConst.SYSTEM_ERROR);
+            testCaseResult.setStatus(StatusConst.SE);
             testCaseResult.setId(testCaseNum);
             resultMap.put(testCaseNum, testCaseResult);
         } finally {
@@ -98,11 +98,12 @@ public class TestCaseInputTask implements Runnable {
         }
     }
 
+    //update ac wa pe tle me se
     //todo update database
     private void checkAnswer(Problem problem, File outputFile, TestCaseResult testCaseResult) {
         try {
             if (problem.getTime().longValue() < testCaseResult.getTime().longValue()) {
-                testCaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED);
+                testCaseResult.setStatus(StatusConst.TLE);
                 return;
             }
             /*if (problem.getMemory().longValue() < testCaseResult.getMemory().longValue()) {
@@ -115,20 +116,19 @@ public class TestCaseInputTask implements Runnable {
             String formatAnswerOutput = formatString(answerOutPut);
 
             if (answerOutPut.equals(output)) {
-                testCaseResult.setStatus(StatusConst.ACCEPTED);
+                testCaseResult.setStatus(StatusConst.AC);
             } else {
                 if (formatOutput.equals(formatAnswerOutput)) {
-                    testCaseResult.setStatus(StatusConst.PRESENTATION_ERROR);
+                    testCaseResult.setStatus(StatusConst.PE);
                 } else {
-                    testCaseResult.setStatus(StatusConst.WRONG_ANSWER);
+                    testCaseResult.setStatus(StatusConst.WA);
                 }
             }
-            return;
 
         } catch (IOException e) {
             e.printStackTrace();
-            testCaseResult.setStatus(StatusConst.SYSTEM_ERROR);
-            logger.error(e.getMessage());
+            testCaseResult.setStatus(StatusConst.SE);
+            logger.error(e.toString());
         }
 
     }

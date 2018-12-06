@@ -11,6 +11,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.*;
@@ -23,61 +26,25 @@ import java.util.regex.Pattern;
  */
 public class JudgeDao {
 
-    public static void main(String[] args) throws IOException, NoSuchFieldException, IllegalAccessException, InterruptedException {
-     /*   Runtime runtime = Runtime.getRuntime();
+    public static void main(String[] args) throws IOException, InterruptedException {
+        Runtime runtime = Runtime.getRuntime();
         Process process = runtime.exec("java -classpath /home/ming/Desktop/ Main");
-        new Thread(() -> {
-            int p = 100;
-            while (p-- > 0) {
-                try{
-                    String cmd = "cat   /proc/" + getPid(process) + "/status | grep VmRSS";
-                    Process ps = runtime.exec(new String[]{"/bin/sh", "-c", cmd});
-                    String memory = StreamUtil.getOutPut(ps.getInputStream());
-                    Pattern pattern = Pattern.compile("[0-9]* kB");
-                    Matcher matcher = pattern.matcher(memory);
-                    while (matcher.find()) {
-                        System.out.println("----" + matcher.group());
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-
-        System.out.println(getPid(process));
-        Thread.sleep(15000);
-        new Thread(() -> {
+        System.out.println(StreamUtil.getOutPut(process.getInputStream()));
+        Instant start = Instant.now();
+        process.waitFor();
+        Instant end = Instant.now();
+        System.out.println(Duration.between(start,end).toMillis());
+        /*new Thread(()->{
             try {
-                StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1004/input/1.txt");
                 System.out.println(StreamUtil.getOutPut(process.getInputStream()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();*/
+        }).start();
+*/
+//        process.destroyForcibly();
+        System.out.println(process.exitValue());
 
-        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-
-
-        MemoryUsage memoryUsage = memoryMXBean.getHeapMemoryUsage(); //椎内存使用情况
-
-
-        long totalMemorySize = memoryUsage.getInit(); //初始的总内存
-
-
-        long maxMemorySize = memoryUsage.getMax(); //最大可用内存
-
-
-        long usedMemorySize = memoryUsage.getUsed(); //已使用的内存
-        System.out.println(totalMemorySize);
-        System.out.println(maxMemorySize);
-        System.out.println(usedMemorySize);
 
     }
 

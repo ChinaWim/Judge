@@ -8,25 +8,26 @@ import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
  * @date 18-11-27 下午3:58
  */
 public enum StatusConst {
-    COMPILE_SUCCESS(0, "编译成功"),
+    //0 wait 1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re 8 wa 200编译成功
+    CS(200, "COMPILE_SUCCESS"),
 
-    COMPILE_ERROR(-1,"编译错误"),
+    WAIT(0,"WAIT"),
 
-    ACCEPTED(1,"通过"),
+    AC(1,"ACCEPTED"),
 
-    PRESENTATION_ERROR(-2,"格式错误"),
+    CE(2,"COMPILE_ERROR"),
 
-    WRONG_ANSWER(-3,"答案不对"),
+    PE(3,"PRESENTATION_ERROR"),
 
-    TIME_LIMIT_EXCEEDED(-4,"超时"),
+    TLE(4,"TIME_LIMIT_EXCEEDED"),
 
-    MEMORY_LIMIT_EXCEEDED(-5,"内存超过限制"),
+    ME(5,"MEMORY_LIMIT_EXCEEDED"),
 
-    RUNTIME_ERROR(-6,"运行时错误"),
+    SE(6,"SYSTEM_ERROR"),
 
-    OUTPUT_LIMIT_EXCEEDED(-7,"输出文件超限"),
+    RE(7,"RUNTIME_ERROR"),
 
-    SYSTEM_ERROR(-8,"系统错误");
+    WA(8,"Wrong Answer");
 
     StatusConst(Integer status,String desc) {
         this.status = status;

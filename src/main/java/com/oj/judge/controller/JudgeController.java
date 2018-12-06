@@ -38,7 +38,7 @@ public class JudgeController {
             return "输入不能为空";
         }
         String result = judgeService.compile(session, sourceCode, type, problemId);
-        if (result.equals(StatusConst.COMPILE_SUCCESS.getDesc())) {
+        if (result.equals(StatusConst.CS.getDesc())) {
             try {
                 executorService.execute(() -> {
                     ProblemResult problemResult = judgeService.execute(session, type, problemId);
@@ -52,7 +52,7 @@ public class JudgeController {
                     }));
                 });
             } catch (RejectedExecutionException e) {
-                logger.error(e.getMessage());
+                logger.error(e.toString());
                 return "服务器繁忙请稍等";
             }
         } else {
