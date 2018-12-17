@@ -1,0 +1,39 @@
+#==================== Tomcat Setting =====================#
+server:
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+  port: 9081
+#==================== spring Setting =====================#
+spring:
+  datasource:
+    druid:
+      username: root
+      password: 47218382
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/ojdb?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      max-active: 50
+      min-idle: 10
+      initial-size: 10
+      max-wait: 10
+      default-auto-commit: true
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 30MB
+  http:
+    encoding:
+      charset: UTF-8
+mybatis:
+  config-location: classpath:mybatis.config.xml
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.oj.judge.entity
+
+#==================== logging Setting =====================#
+#logging:
+#  config: classpath:logback.xml
+
+#==================== project Setting =====================#
+file:
+  dir: /home/ming/Music

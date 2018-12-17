@@ -1,51 +1,64 @@
 package com.oj.judge.dao;
 
 import com.oj.judge.utils.StreamUtil;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinNT;
 
-import java.awt.image.Kernel;
-import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
+ * 24140(3) 25572(3) 27252(3) 27640 //误差大概在5mb之内
+ * 27100(3) 27308　27164　//前
+ * 30272 (6)
+ * <p>
+ * 无睡眠
+ *
  * @author m969130721@163.com
  * @date 18-11-27 下午3:05
  */
 public class JudgeDao {
-
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, NoSuchFieldException, IllegalAccessException {
         Runtime runtime = Runtime.getRuntime();
         Process process = runtime.exec("java -classpath /home/ming/Desktop/ Main");
-        System.out.println(StreamUtil.getOutPut(process.getInputStream()));
-        Instant start = Instant.now();
-        process.waitFor();
-        Instant end = Instant.now();
-        System.out.println(Duration.between(start,end).toMillis());
-        /*new Thread(()->{
-            try {
-                System.out.println(StreamUtil.getOutPut(process.getInputStream()));
-            } catch (IOException e) {
-                e.printStackTrace();
+
+        Thread thread = new Thread(() -> {
+            Long max = 0L;
+            while (process.isAlive()) {
+                try {
+                    String cmd = "cat   /proc/" + getPid(process) + "/status | grep VmRSS";
+                    Process ps = runtime.exec(new String[]{"/bin/sh", "-c", cmd});
+                    String memory = StreamUtil.getOutPut(ps.getInputStream());
+                    Pattern pattern = Pattern.compile("[0-9]* kB");
+                    Matcher matcher = pattern.matcher(memory);
+                    while (matcher.find()) {
+                        String result = matcher.group();
+                        result = result.substring(0, result.length() - 3);
+                        long aLong = Long.parseLong(result);
+                        if (aLong > max) {
+                            max = aLong;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }).start();
-*/
-//        process.destroyForcibly();
-        System.out.println(process.exitValue());
+            System.out.println("limit:" + max);
+        });
+        thread.setPriority(10);
+        thread.start();
+//        System.out.println(getPid(process));
+//        Thread.sleep(15000);
+        Thread thread1 = new Thread(() -> {
+//          StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1004/input/1.txt");
+            System.out.println(StreamUtil.getOutPut(process.getInputStream()));
 
-
+        });
+        thread1.setPriority(2);
+        thread1.start();
     }
 
     public static int getPid(Process process) throws IllegalAccessException, NoSuchFieldException {

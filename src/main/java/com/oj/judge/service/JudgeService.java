@@ -1,13 +1,9 @@
 package com.oj.judge.service;
 
-import com.oj.judge.pojo.ProblemResult;
-import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
+import com.oj.judge.entity.ProblemResult;
 
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author m969130721@163.com
@@ -16,8 +12,8 @@ import java.util.TreeMap;
 public interface JudgeService {
 
 
-    String compile(HttpSession session,String sourceCode,String type,Integer problemId);
+    List<String> compile(Integer userId, String sourceCode, String type, Integer problemId);
 
-    ProblemResult execute(HttpSession session, String type, Integer problemId);
+    void execute(Integer userId, String type, Integer problemId,Integer problemResultId,String userDirPath);
 
 }

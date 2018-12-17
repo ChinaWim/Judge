@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oj.judge.dao.ProblemMapper" >
+  <resultMap id="BaseResultMap" type="com.oj.judge.entity.Problem" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="pro_category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="content" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="input_desc" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="output_desc" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="level" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="submit_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ac_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="tle_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="pe_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="me_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="re_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ce_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="wa_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="time" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="memory" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="flag" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pro_category_id, name, content, input_desc, output_desc, level, submit_count, 
+    ac_count, tle_count, pe_count, me_count, re_count, ce_count, wa_count, time, memory, 
+    flag, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from problem
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from problem
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert"  keyProperty="id" parameterType="com.oj.judge.entity.Problem" >
+    insert into problem (id, pro_category_id, name, 
+      content, input_desc, output_desc, 
+      level, submit_count, ac_count, 
+      tle_count, pe_count, me_count, 
+      re_count, ce_count, wa_count, 
+      time, memory, flag, create_time)
+    values (#{id,jdbcType=INTEGER}, #{proCategoryId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{inputDesc,jdbcType=VARCHAR}, #{outputDesc,jdbcType=VARCHAR}, 
+      #{level,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, #{acCount,jdbcType=INTEGER}, 
+      #{tleCount,jdbcType=INTEGER}, #{peCount,jdbcType=INTEGER}, #{meCount,jdbcType=INTEGER}, 
+      #{reCount,jdbcType=INTEGER}, #{ceCount,jdbcType=INTEGER}, #{waCount,jdbcType=INTEGER}, 
+      #{time,jdbcType=BIGINT}, #{memory,jdbcType=BIGINT}, #{flag,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+     )
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.oj.judge.entity.Problem" >
+    insert into problem
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="proCategoryId != null" >
+        pro_category_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="inputDesc != null" >
+        input_desc,
+      </if>
+      <if test="outputDesc != null" >
+        output_desc,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="submitCount != null" >
+        submit_count,
+      </if>
+      <if test="acCount != null" >
+        ac_count,
+      </if>
+      <if test="tleCount != null" >
+        tle_count,
+      </if>
+      <if test="peCount != null" >
+        pe_count,
+      </if>
+      <if test="meCount != null" >
+        me_count,
+      </if>
+      <if test="reCount != null" >
+        re_count,
+      </if>
+      <if test="ceCount != null" >
+        ce_count,
+      </if>
+      <if test="waCount != null" >
+        wa_count,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="memory != null" >
+        memory,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="proCategoryId != null" >
+        #{proCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="inputDesc != null" >
+        #{inputDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="outputDesc != null" >
+        #{outputDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="submitCount != null" >
+        #{submitCount,jdbcType=INTEGER},
+      </if>
+      <if test="acCount != null" >
+        #{acCount,jdbcType=INTEGER},
+      </if>
+      <if test="tleCount != null" >
+        #{tleCount,jdbcType=INTEGER},
+      </if>
+      <if test="peCount != null" >
+        #{peCount,jdbcType=INTEGER},
+      </if>
+      <if test="meCount != null" >
+        #{meCount,jdbcType=INTEGER},
+      </if>
+      <if test="reCount != null" >
+        #{reCount,jdbcType=INTEGER},
+      </if>
+      <if test="ceCount != null" >
+        #{ceCount,jdbcType=INTEGER},
+      </if>
+      <if test="waCount != null" >
+        #{waCount,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=BIGINT},
+      </if>
+      <if test="memory != null" >
+        #{memory,jdbcType=BIGINT},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+
+
+  <update id="addAcCount" parameterType="int">
+    update problem set ac_count = ac_count + 1 , submit_count = submit_count + 1
+    where id = #{problemId}
+  </update>
+
+  <update id="addTleCount" parameterType="int">
+    update problem set tle_count = tle_count + 1 , submit_count = submit_count + 1
+    where id = #{problemId}
+  </update>
+
+  <update id="addPeCount" parameterType="int">
+    update problem set pe_count = pe_count + 1 , submit_count = submit_count + 1
+    where id = #{problemId}
+  </update>
+
+  <update id="addCeCount" parameterType="int">
+    update problem set ce_count = ce_count + 1 , submit_count = submit_count + 1
+    where id = #{problemId}
+  </update>
+
+
+  <update id="addMeCount" parameterType="int">
+    update problem set me_count = me_count + 1 , submit_count = submit_count + 1
+    where id = #{problemId}
+  </update>
+
+  <update id="addWaCount" parameterType="int">
+    update problem set wa_count = wa_count + 1 , submit_count = submit_count + 1
+    where id = #{problemId}
+  </update>
+
+
+  <update id="addReCount" parameterType="int">
+    update problem set re_count = re_count + 1 , submit_count = submit_count + 1
+    where id = #{problemId}
+  </update>
+
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.oj.judge.entity.Problem" >
+    update problem
+    <set >
+      <if test="proCategoryId != null" >
+        pro_category_id = #{proCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="inputDesc != null" >
+        input_desc = #{inputDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="outputDesc != null" >
+        output_desc = #{outputDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="submitCount != null" >
+        submit_count = #{submitCount,jdbcType=INTEGER},
+      </if>
+      <if test="acCount != null" >
+        ac_count = #{acCount,jdbcType=INTEGER},
+      </if>
+      <if test="tleCount != null" >
+        tle_count = #{tleCount,jdbcType=INTEGER},
+      </if>
+      <if test="peCount != null" >
+        pe_count = #{peCount,jdbcType=INTEGER},
+      </if>
+      <if test="meCount != null" >
+        me_count = #{meCount,jdbcType=INTEGER},
+      </if>
+      <if test="reCount != null" >
+        re_count = #{reCount,jdbcType=INTEGER},
+      </if>
+      <if test="ceCount != null" >
+        ce_count = #{ceCount,jdbcType=INTEGER},
+      </if>
+      <if test="waCount != null" >
+        wa_count = #{waCount,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=BIGINT},
+      </if>
+      <if test="memory != null" >
+        memory = #{memory,jdbcType=BIGINT},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.Problem" >
+    update problem
+    set pro_category_id = #{proCategoryId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      input_desc = #{inputDesc,jdbcType=VARCHAR},
+      output_desc = #{outputDesc,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      submit_count = #{submitCount,jdbcType=INTEGER},
+      ac_count = #{acCount,jdbcType=INTEGER},
+      tle_count = #{tleCount,jdbcType=INTEGER},
+      pe_count = #{peCount,jdbcType=INTEGER},
+      me_count = #{meCount,jdbcType=INTEGER},
+      re_count = #{reCount,jdbcType=INTEGER},
+      ce_count = #{ceCount,jdbcType=INTEGER},
+      wa_count = #{waCount,jdbcType=INTEGER},
+      time = #{time,jdbcType=BIGINT},
+      memory = #{memory,jdbcType=BIGINT},
+      flag = #{flag,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

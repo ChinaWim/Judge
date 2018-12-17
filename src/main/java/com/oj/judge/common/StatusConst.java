@@ -1,17 +1,21 @@
 package com.oj.judge.common;
 
-import com.sun.org.apache.regexp.internal.RE;
-import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
 
 /**
  * @author m969130721@163.com
  * @date 18-11-27 下午3:58
  */
 public enum StatusConst {
-    //0 wait 1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re 8 wa  COMPILE_SUCCESS 200编译成功
+
+    //-2判题中　-1队列中  0编译中　1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re 8 wa
+
     COMPILE_SUCCESS(200, "COMPILE SUCCESS"),
 
-    WAIT(0, "WAIT"),
+    JUDGING(-2, "JUDGING"),
+
+    QUEUING(-1, "QUEUING"),
+
+    COMPILING(0, "COMPILING"),
 
     ACCEPTED(1, "AC"),
 
@@ -45,4 +49,17 @@ public enum StatusConst {
     public String getDesc() {
         return desc;
     }
+
+
+    public static StatusConst getStatusConst(Integer status) {
+        StatusConst[] statusConstArray = StatusConst.values();
+        for (StatusConst statusConst : statusConstArray) {
+            if (statusConst.getStatus().equals(status)) {
+                return statusConst;
+            }
+        }
+        return null;
+    }
+
+
 }

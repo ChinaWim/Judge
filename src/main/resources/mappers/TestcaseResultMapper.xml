@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oj.judge.dao.TestcaseResultMapper" >
+  <resultMap id="BaseResultMap" type="com.oj.judge.entity.TestcaseResult" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="pro_re_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="num" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="input" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="output" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_output" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="time" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="memory" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pro_re_id, num, input, output, user_output, time, memory, status, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from testcase_result
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from testcase_result
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyProperty="id" parameterType="com.oj.judge.entity.TestcaseResult" >
+    insert into testcase_result (id, pro_re_id, num, 
+      input, output, user_output, 
+      time, memory, status, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{proReId,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, 
+      #{input,jdbcType=VARCHAR}, #{output,jdbcType=VARCHAR}, #{userOutput,jdbcType=VARCHAR}, 
+      #{time,jdbcType=BIGINT}, #{memory,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.oj.judge.entity.TestcaseResult" >
+    insert into testcase_result
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="proReId != null" >
+        pro_re_id,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="input != null" >
+        input,
+      </if>
+      <if test="output != null" >
+        output,
+      </if>
+      <if test="userOutput != null" >
+        user_output,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="memory != null" >
+        memory,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="proReId != null" >
+        #{proReId,jdbcType=INTEGER},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="input != null" >
+        #{input,jdbcType=VARCHAR},
+      </if>
+      <if test="output != null" >
+        #{output,jdbcType=VARCHAR},
+      </if>
+      <if test="userOutput != null" >
+        #{userOutput,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=BIGINT},
+      </if>
+      <if test="memory != null" >
+        #{memory,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+
+    </trim>
+  </insert>
+  <insert id="insertBatch" parameterType="list">
+    insert into testcase_result (pro_re_id,num,input,output,user_output,time,memory,status,create_time) values
+    <foreach collection="testcaseResultList" item="entity" separator="," >
+      (#{entity.proReId},#{entity.num},#{entity.input},#{entity.output},#{entity.userOutput},
+      #{entity.time},#{entity.memory},#{entity.status},#{entity.createTime})
+    </foreach>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.oj.judge.entity.TestcaseResult" >
+    update testcase_result
+    <set >
+      <if test="proReId != null" >
+        pro_re_id = #{proReId,jdbcType=INTEGER},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="input != null" >
+        input = #{input,jdbcType=VARCHAR},
+      </if>
+      <if test="output != null" >
+        output = #{output,jdbcType=VARCHAR},
+      </if>
+      <if test="userOutput != null" >
+        user_output = #{userOutput,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=BIGINT},
+      </if>
+      <if test="memory != null" >
+        memory = #{memory,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.TestcaseResult" >
+    update testcase_result
+    set pro_re_id = #{proReId,jdbcType=INTEGER},
+      num = #{num,jdbcType=INTEGER},
+      input = #{input,jdbcType=VARCHAR},
+      output = #{output,jdbcType=VARCHAR},
+      user_output = #{userOutput,jdbcType=VARCHAR},
+      time = #{time,jdbcType=BIGINT},
+      memory = #{memory,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

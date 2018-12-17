@@ -1,21 +1,21 @@
 package com.oj.judge.controller;
 
+import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import com.oj.judge.common.StatusConst;
-import com.oj.judge.pojo.ProblemResult;
-import com.oj.judge.pojo.TestCaseResult;
+import com.oj.judge.dao.ProblemMapper;
+import com.oj.judge.entity.Problem;
+import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.service.JudgeService;
+import com.oj.judge.service.ProblemService;
+import com.oj.judge.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.*;
 
 /**
@@ -29,36 +29,57 @@ public class JudgeController {
     @Autowired
     private JudgeService judgeService;
 
+    @Autowired
+    private ProblemService problemService;
+
+    @Autowired
+    private UserService userService;
+
     private static ExecutorService executorService =
             new ThreadPoolExecutor(32, 40, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(400));
 
     @RequestMapping("/submit")
-    public Object submit(HttpSession session, String sourceCode, String type, Integer problemId) throws IOException {
+    public Object submit(Integer userId, Integer compId, String sourceCode, String type, Integer problemId) throws IOException {
         if (sourceCode == null || "".equals(sourceCode) || type == null || "".equals(type) || problemId == null) {
             return "输入不能为空";
         }
-        String result = judgeService.compile(session, sourceCode, type, problemId);
-        if (result.equals(StatusConst.COMPILE_SUCCESS.getDesc())) {
+
+        //add 编译中
+        ProblemResult problemResult = new ProblemResult();
+        problemResult.setUserId(userId);
+        problemResult.setCompId(compId);
+        problemResult.setType(type);
+        problemResult.setProblemId(problemId);
+        problemResult.setSourceCode(sourceCode);
+        problemResult.setStatus(StatusConst.COMPILING.getStatus());
+        problemService.insertProblemResult(problemResult);
+        int problemResultId = problemResult.getId();
+
+        //执行编译
+        List<String> resultList = judgeService.compile(userId, sourceCode, type, problemId);
+        String compileResult = resultList.get(0);
+        String userDirPath = resultList.get(1);
+
+        if (StatusConst.COMPILE_SUCCESS.getDesc().equals(compileResult)) {
+            //update 队列中
+            problemService.updateProblemResultStatus(problemResultId, StatusConst.QUEUING.getStatus());
             try {
                 executorService.execute(() -> {
-                    ProblemResult problemResult = judgeService.execute(session, type, problemId);
-                    problemResult.getResultTreeMap().entrySet().stream().forEach((entry -> {
-                        TestCaseResult testCaseResult = entry.getValue();
-                        logger.info("样例num: " + testCaseResult.getId());
-                        logger.info("状态: " + testCaseResult.getStatus().getDesc());
-                        logger.info("时间: " + testCaseResult.getTime());
-                        logger.info("输出: " + testCaseResult.getOutput());
-                        logger.info("-------------------------------------------------");
-                    }));
+                    judgeService.execute(userId, type, problemId,problemResultId,userDirPath);
                 });
             } catch (RejectedExecutionException e) {
                 logger.error(e.toString());
                 return "服务器繁忙请稍等";
             }
+
         } else {
-            //update database compile error
+            //update compile error
+            problemService.updateProblemResultStatus(problemResultId, StatusConst.COMPILE_ERROR.getStatus());
+            //add count
+            problemService.addProblemCount(problemId, StatusConst.COMPILE_ERROR);
+            userService.addCount(userId,StatusConst.COMPILE_ERROR);
         }
-        return result;
+        return compileResult;
     }
 
 
