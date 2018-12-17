@@ -39,7 +39,8 @@ public class TestcaseOutputTask implements Callable<TestcaseResult> {
         //等待进程执行结束 0代表正常退出
         process.waitFor();
         int exitValue = process.exitValue();
-        if (exitValue != 0) {
+        //todo
+        if (exitValue != 0 && exitValue != 137) {
             testcaseResult.setStatus(StatusConst.RUNTIME_ERROR.getStatus());
         }
         return testcaseResult;

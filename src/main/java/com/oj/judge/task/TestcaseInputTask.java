@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.TreeMap;
 import java.util.concurrent.*;
+import java.util.stream.Stream;
 
 /**
  * 测试样例输入任务
@@ -54,25 +56,26 @@ public class TestcaseInputTask implements Runnable {
 
         //输入测试样例
         OutputStream outputStream = process.getOutputStream();
-        String input = StreamUtil.setInPut(outputStream, inputFile.getPath());
+        StreamUtil.setInPut(outputStream, inputFile.getPath());
 
         //测试样例结果
         TestcaseResult testcaseResult = new TestcaseResult();
+        testcaseResult.setCreateTime(new Date());
         testcaseResult.setNum(testCaseNum);
         testcaseResult.setProReId(problemResult.getId());
-        testcaseResult.setInput(input);
 
         //计算输出时间任务
         FutureTask<TestcaseResult> task = new FutureTask<>(new TestcaseOutputTask(process, testcaseResult));
         new Thread(task).start();
 
         try {
-            //计算时间，等待题目秒数 + 600毫秒
-            testcaseResult = task.get(problem.getTime() + 600, TimeUnit.MILLISECONDS);
-            //答案校验
-            File outputFile = new File(outputFileDirPath + "/" + fileName);
-            checkAnswer(problem, outputFile, testcaseResult);
-
+            //计算时间，等待题目秒数 + 500毫秒
+            testcaseResult = task.get(problem.getTime() + 500, TimeUnit.MILLISECONDS);
+            if (!StatusConst.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
+                //答案校验
+                File outputFile = new File(outputFileDirPath + "/" + fileName);
+                checkAnswer(problem, outputFile, testcaseResult);
+            }
             resultMap.put(testCaseNum, testcaseResult);
         } catch (TimeoutException e) {
             process.destroyForcibly();
@@ -87,21 +90,17 @@ public class TestcaseInputTask implements Runnable {
             testcaseResult.setStatus(StatusConst.SYSTEM_ERROR.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } finally {
+            //关闭子进程
+            Stream<ProcessHandle> descendants = process.descendants();
+            descendants.forEach(p -> {
+                p.destroyForcibly();
+            });
             countDownLatch.countDown();
         }
     }
 
     private void checkAnswer(Problem problem, File outputFile, TestcaseResult testcaseResult) {
         try {
-            String answerOutPut = StreamUtil.getOutPut(new FileInputStream(outputFile));
-            String userOutput = testcaseResult.getUserOutput();
-            String formatOutput = formatString(userOutput);
-            String formatAnswerOutput = formatString(answerOutPut);
-            testcaseResult.setOutput(answerOutPut);
-
-            if (StatusConst.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
-                return;
-            }
             if (problem.getTime().longValue() < testcaseResult.getTime().longValue()) {
                 testcaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED.getStatus());
                 return;
@@ -109,6 +108,11 @@ public class TestcaseInputTask implements Runnable {
             /*if (problem.getMemory().longValue() < testcaseResult.getMemory().longValue()) {
                 return;
             }*/
+            String answerOutPut = StreamUtil.getOutPut(new FileInputStream(outputFile));
+            String userOutput = testcaseResult.getUserOutput();
+            String formatOutput = formatString(userOutput);
+            String formatAnswerOutput = formatString(answerOutPut);
+
             if (answerOutPut.equals(userOutput)) {
                 testcaseResult.setStatus(StatusConst.ACCEPTED.getStatus());
             } else {

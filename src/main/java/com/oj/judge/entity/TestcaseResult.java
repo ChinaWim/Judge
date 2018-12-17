@@ -10,10 +10,6 @@ public class TestcaseResult implements Serializable {
 
     private Integer num;
 
-    private String input;
-
-    private String output;
-
     private String userOutput;
 
     private Long time;
@@ -26,12 +22,10 @@ public class TestcaseResult implements Serializable {
 
     private Date updateTime;
 
-    public TestcaseResult(Integer id, Integer proReId, Integer num, String input, String output, String userOutput, Long time, Long memory, Integer status, Date createTime, Date updateTime) {
+    public TestcaseResult(Integer id, Integer proReId, Integer num, String userOutput, Long time, Long memory, Integer status, Date createTime, Date updateTime) {
         this.id = id;
         this.proReId = proReId;
         this.num = num;
-        this.input = input;
-        this.output = output;
         this.userOutput = userOutput;
         this.time = time;
         this.memory = memory;
@@ -66,22 +60,6 @@ public class TestcaseResult implements Serializable {
 
     public void setNum(Integer num) {
         this.num = num;
-    }
-
-    public String getInput() {
-        return input;
-    }
-
-    public void setInput(String input) {
-        this.input = input == null ? null : input.trim();
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public void setOutput(String output) {
-        this.output = output == null ? null : output.trim();
     }
 
     public String getUserOutput() {
@@ -132,14 +110,13 @@ public class TestcaseResult implements Serializable {
         this.updateTime = updateTime;
     }
 
+
     @Override
     public String toString() {
         return "TestcaseResult{" +
                 "id=" + id +
                 ", proReId=" + proReId +
                 ", num=" + num +
-                ", input='" + input + '\'' +
-                ", output='" + output + '\'' +
                 ", userOutput='" + userOutput + '\'' +
                 ", time=" + time +
                 ", memory=" + memory +

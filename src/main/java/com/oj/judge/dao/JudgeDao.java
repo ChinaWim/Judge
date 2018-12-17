@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -25,7 +27,7 @@ public class JudgeDao {
         Runtime runtime = Runtime.getRuntime();
         Process process = runtime.exec("java -classpath /home/ming/Desktop/ Main");
 
-        Thread thread = new Thread(() -> {
+       Thread thread = new Thread(() -> {
             Long max = 0L;
             while (process.isAlive()) {
                 try {
@@ -56,9 +58,22 @@ public class JudgeDao {
 //          StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1004/input/1.txt");
             System.out.println(StreamUtil.getOutPut(process.getInputStream()));
 
+
+
         });
         thread1.setPriority(2);
         thread1.start();
+        Thread.sleep(2000);
+//        process.destroyForcibly();
+        runtime.exec("kill -9 "+process.pid());
+        System.out.println(process.isAlive()+"b");
+        Stream<ProcessHandle> descendants = process.descendants();
+        descendants.forEach(p ->{
+            p.destroyForcibly();
+        });
+        System.out.println(process.isAlive());
+        Stream<ProcessHandle> descendants1 = process.descendants();
+
     }
 
     public static int getPid(Process process) throws IllegalAccessException, NoSuchFieldException {
