@@ -7,13 +7,13 @@ package com.oj.judge.common;
  */
 public enum StatusConst {
 
-    //-2判题中　-1队列中  0编译中　1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re 8 wa
+//     0 编译中　1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re ８ wa　９队列中 10判题中
 
     COMPILE_SUCCESS(200, "COMPILE SUCCESS"),
 
-    JUDGING(-2, "JUDGING"),
+    JUDGING(10, "JUDGING"),
 
-    QUEUING(-1, "QUEUING"),
+    QUEUING(9, "QUEUING"),
 
     COMPILING(0, "COMPILING"),
 

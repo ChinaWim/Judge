@@ -4,7 +4,7 @@ package com.oj.judge.common;
  * 返回给View的 Json Object
  * Created by Ming on 2018/3/16.
  */
-public class ServerResult {
+public class ServerResponse {
 
     private static final int SUCCESS_STATE = 200;
 
@@ -25,10 +25,10 @@ public class ServerResult {
      */
     private Object Data;
 
-    public ServerResult() {
+    public ServerResponse() {
     }
 
-    public ServerResult(int state, String msg, Object data) {
+    public ServerResponse(int state, String msg, Object data) {
         this.state = state;
         this.msg = msg;
         Data = data;
@@ -41,8 +41,8 @@ public class ServerResult {
      *
      * @return
      */
-    public static ServerResult success() {
-        ServerResult jsonResultVO = new ServerResult();
+    public static ServerResponse success() {
+        ServerResponse jsonResultVO = new ServerResponse();
         jsonResultVO.setState(SUCCESS_STATE);
         return jsonResultVO;
     }
@@ -53,8 +53,8 @@ public class ServerResult {
      * @param msg
      * @return
      */
-    public static ServerResult success(String msg) {
-        ServerResult jsonResultVO = new ServerResult();
+    public static ServerResponse success(String msg) {
+        ServerResponse jsonResultVO = new ServerResponse();
         jsonResultVO.setState(SUCCESS_STATE);
         jsonResultVO.setMsg(msg);
         return jsonResultVO;
@@ -67,8 +67,8 @@ public class ServerResult {
      * @param data
      * @return
      */
-    public static ServerResult success(String msg, Object data) {
-        ServerResult jsonResultVO = new ServerResult();
+    public static ServerResponse success(String msg, Object data) {
+        ServerResponse jsonResultVO = new ServerResponse();
         jsonResultVO.setState(SUCCESS_STATE);
         jsonResultVO.setData(data);
         jsonResultVO.setMsg(msg);
@@ -81,8 +81,8 @@ public class ServerResult {
      * @param msg
      * @return
      */
-    public static ServerResult fail(String msg) {
-        ServerResult jsonResultVO = new ServerResult();
+    public static ServerResponse fail(String msg) {
+        ServerResponse jsonResultVO = new ServerResponse();
         jsonResultVO.setState(FAIL_STATE);
         jsonResultVO.setMsg(msg);
         return jsonResultVO;
@@ -93,8 +93,8 @@ public class ServerResult {
      *
      * @return
      */
-    public static ServerResult fail() {
-        ServerResult jsonResultVO = new ServerResult();
+    public static ServerResponse fail() {
+        ServerResponse jsonResultVO = new ServerResponse();
         jsonResultVO.setState(FAIL_STATE);
         return jsonResultVO;
     }
@@ -125,7 +125,7 @@ public class ServerResult {
 
     @Override
     public String toString() {
-        return "ServerResult{" +
+        return "ServerResponse{" +
                 "state=" + state +
                 ", msg='" + msg + '\'' +
                 ", Data=" + Data +

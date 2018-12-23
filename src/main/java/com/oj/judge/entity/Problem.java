@@ -16,6 +16,10 @@ public class Problem implements Serializable {
 
     private String outputDesc;
 
+    private String testcaseInput;
+
+    private String testcaseOutput;
+
     private String tag;
 
     private Integer level;
@@ -46,13 +50,15 @@ public class Problem implements Serializable {
 
     private Date updateTime;
 
-    public Problem(Integer id, Integer proCategoryId, String name, String content, String inputDesc, String outputDesc, String tag, Integer level, Integer submitCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer reCount, Integer ceCount, Integer waCount, Long time, Long memory, Integer flag, Date createTime, Date updateTime) {
+    public Problem(Integer id, Integer proCategoryId, String name, String content, String inputDesc, String outputDesc, String testcaseInput, String testcaseOutput, String tag, Integer level, Integer submitCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer reCount, Integer ceCount, Integer waCount, Long time, Long memory, Integer flag, Date createTime, Date updateTime) {
         this.id = id;
         this.proCategoryId = proCategoryId;
         this.name = name;
         this.content = content;
         this.inputDesc = inputDesc;
         this.outputDesc = outputDesc;
+        this.testcaseInput = testcaseInput;
+        this.testcaseOutput = testcaseOutput;
         this.tag = tag;
         this.level = level;
         this.submitCount = submitCount;
@@ -120,6 +126,22 @@ public class Problem implements Serializable {
 
     public void setOutputDesc(String outputDesc) {
         this.outputDesc = outputDesc == null ? null : outputDesc.trim();
+    }
+
+    public String getTestcaseInput() {
+        return testcaseInput;
+    }
+
+    public void setTestcaseInput(String testcaseInput) {
+        this.testcaseInput = testcaseInput == null ? null : testcaseInput.trim();
+    }
+
+    public String getTestcaseOutput() {
+        return testcaseOutput;
+    }
+
+    public void setTestcaseOutput(String testcaseOutput) {
+        this.testcaseOutput = testcaseOutput == null ? null : testcaseOutput.trim();
     }
 
     public String getTag() {
@@ -242,7 +264,6 @@ public class Problem implements Serializable {
         this.updateTime = updateTime;
     }
 
-
     @Override
     public String toString() {
         return "Problem{" +
@@ -252,6 +273,8 @@ public class Problem implements Serializable {
                 ", content='" + content + '\'' +
                 ", inputDesc='" + inputDesc + '\'' +
                 ", outputDesc='" + outputDesc + '\'' +
+                ", testcaseInput='" + testcaseInput + '\'' +
+                ", testcaseOutput='" + testcaseOutput + '\'' +
                 ", tag='" + tag + '\'' +
                 ", level=" + level +
                 ", submitCount=" + submitCount +

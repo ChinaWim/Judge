@@ -1,6 +1,6 @@
 package com.oj.judge.service.impl;
 
-import com.oj.judge.common.ServerResult;
+import com.oj.judge.common.ServerResponse;
 import com.oj.judge.common.StatusConst;
 import com.oj.judge.dao.ProblemMapper;
 import com.oj.judge.dao.ProblemResultMapper;
@@ -43,10 +43,10 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public ServerResult insertProblemResult(ProblemResult result) {
+    public ServerResponse insertProblemResult(ProblemResult result) {
         result.setCreateTime(new Date());
         int effect = problemResultMapper.insertSelective(result);
-        return effect > 0 ? ServerResult.success() : ServerResult.fail();
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 
     /**
@@ -56,9 +56,9 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResult updateProblem(Problem problem) {
+    public ServerResponse updateProblem(Problem problem) {
         int effect = problemMapper.updateByPrimaryKeySelective(problem);
-        return effect > 0 ? ServerResult.success() : ServerResult.fail();
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 
     /**
@@ -67,9 +67,9 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResult updateProblemResult(ProblemResult problemResultId) {
+    public ServerResponse updateProblemResult(ProblemResult problemResultId) {
         int effect = problemResultMapper.updateByPrimaryKeySelective(problemResultId);
-        return effect > 0 ? ServerResult.success() : ServerResult.fail();
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 
 
@@ -79,9 +79,9 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResult updateProblemResultStatus(Integer problemResultId, Integer status) {
+    public ServerResponse updateProblemResultStatus(Integer problemResultId, Integer status) {
         int effect = problemResultMapper.updateProblemResultStatus(problemResultId, status);
-        return effect > 0 ? ServerResult.success() : ServerResult.fail();
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 
     /**
@@ -92,7 +92,7 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResult addProblemCount(Integer problemId, StatusConst statusConst) {
+    public ServerResponse addProblemCount(Integer problemId, StatusConst statusConst) {
         int effect = 0;
         if (Objects.equals(StatusConst.ACCEPTED, statusConst)) {
             effect = problemMapper.addAcCount(problemId);
@@ -116,13 +116,13 @@ public class ProblemServiceImpl implements ProblemService {
             effect = problemMapper.addWaCount(problemId);
         }
 
-        return effect > 0 ? ServerResult.success() : ServerResult.fail();
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 
     @Override
-    public ServerResult insertBatchTestcaseResult(List<TestcaseResult> testcaseResultList) {
+    public ServerResponse insertBatchTestcaseResult(List<TestcaseResult> testcaseResultList) {
         int effect = testcaseResultMapper.insertBatch(testcaseResultList);
-        return effect > 0 ? ServerResult.success() : ServerResult.fail();
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 
     @Override

@@ -1,12 +1,10 @@
 package com.oj.judge.service;
 
-import com.oj.judge.common.ServerResult;
+import com.oj.judge.common.ServerResponse;
 import com.oj.judge.common.StatusConst;
-import com.oj.judge.dao.ProblemMapper;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.entity.TestcaseResult;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -20,17 +18,17 @@ public interface ProblemService {
 
     ProblemResult getProblemResult(Integer problemResultId);
 
-    ServerResult insertProblemResult(ProblemResult result);
+    ServerResponse insertProblemResult(ProblemResult result);
 
-    ServerResult updateProblem(Problem problem);
+    ServerResponse updateProblem(Problem problem);
 
-    ServerResult updateProblemResultStatus(Integer problemResultId, Integer status);
+    ServerResponse updateProblemResultStatus(Integer problemResultId, Integer status);
 
-    ServerResult updateProblemResult(ProblemResult problemResultId);
+    ServerResponse updateProblemResult(ProblemResult problemResultId);
 
-    ServerResult addProblemCount(Integer problemId, StatusConst statusConst);
+    ServerResponse addProblemCount(Integer problemId, StatusConst statusConst);
 
-    ServerResult insertBatchTestcaseResult(List<TestcaseResult> testcaseResultList);
+    ServerResponse insertBatchTestcaseResult(List<TestcaseResult> testcaseResultList);
 
     int countProblemResult(Integer userId,Integer problemId,Integer status);
 
