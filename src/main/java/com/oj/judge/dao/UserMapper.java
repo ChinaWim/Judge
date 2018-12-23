@@ -16,8 +16,6 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
-    int addSignCount(Integer userId);
-
     int addSolutionCount(Integer userId);
 
     int addAcCount(Integer userId);

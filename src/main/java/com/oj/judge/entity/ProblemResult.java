@@ -2,7 +2,9 @@ package com.oj.judge.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public class ProblemResult implements Serializable {
     private Integer id;
@@ -27,7 +29,7 @@ public class ProblemResult implements Serializable {
 
     private Date updateTime;
 
-    private TreeMap<Integer,TestcaseResult> resultTreeMap = new TreeMap<>();
+    private Map<Integer,TestcaseResult> resultMap = new ConcurrentSkipListMap<>();
 
     public ProblemResult(Integer id, Integer userId, Integer problemId, Integer compId, Integer status, String type, Long time, Long memory, String sourceCode, Date createTime, Date updateTime) {
         this.id = id;
@@ -135,11 +137,11 @@ public class ProblemResult implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public TreeMap<Integer, TestcaseResult> getResultTreeMap() {
-        return resultTreeMap;
+    public Map<Integer, TestcaseResult> getResultMap() {
+        return resultMap;
     }
 
-    public void setResultTreeMap(TreeMap<Integer, TestcaseResult> resultTreeMap) {
-        this.resultTreeMap = resultTreeMap;
+    public void setResultMap(Map<Integer, TestcaseResult> resultMap) {
+        this.resultMap = resultMap;
     }
 }

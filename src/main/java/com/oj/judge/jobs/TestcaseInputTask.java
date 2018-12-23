@@ -1,4 +1,4 @@
-package com.oj.judge.task;
+package com.oj.judge.jobs;
 
 import com.oj.judge.common.StatusConst;
 import com.oj.judge.entity.Problem;
@@ -8,12 +8,9 @@ import com.oj.judge.utils.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Date;
-import java.util.TreeMap;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Stream;
 
@@ -50,7 +47,7 @@ public class TestcaseInputTask implements Runnable {
 
     @Override
     public void run() {
-        TreeMap<Integer, TestcaseResult> resultMap = problemResult.getResultTreeMap();
+        Map<Integer, TestcaseResult> resultMap = problemResult.getResultMap();
         String fileName = inputFile.getName();
         Integer testCaseNum = Integer.parseInt(fileName.substring(0, fileName.lastIndexOf(".")));
 
@@ -78,23 +75,21 @@ public class TestcaseInputTask implements Runnable {
             }
             resultMap.put(testCaseNum, testcaseResult);
         } catch (TimeoutException e) {
-            process.destroyForcibly();
             logger.error(StatusConst.TIME_LIMIT_EXCEEDED.getDesc());
 
+            process.destroyForcibly();
             testcaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.toString());
+            logger.error(e.getMessage());
 
             testcaseResult.setStatus(StatusConst.SYSTEM_ERROR.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } finally {
             //关闭子进程
             Stream<ProcessHandle> descendants = process.descendants();
-            descendants.forEach(p -> {
-                p.destroyForcibly();
-            });
+            descendants.forEach(p -> p.destroyForcibly());
             countDownLatch.countDown();
         }
     }
@@ -126,18 +121,31 @@ public class TestcaseInputTask implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
             testcaseResult.setStatus(StatusConst.SYSTEM_ERROR.getStatus());
-            logger.error(e.toString());
+            logger.error(e.getMessage());
         }
     }
 
 
-    private String formatString(String string) {
+    private static String formatString(String string) {
         string = string.replace(" ", "");
         string = string.replace("   ", "");
         string = string.replace("\n", "");
         string = string.replace("\r", "");
         string = string.replace("\t", "");
         return string;
+    }
+
+
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+        String outPut = StreamUtil.getOutPut(new FileInputStream("/home/ming/Music/1000/output/testdata.out"));
+        String testByte = "我";
+        System.out.println(testByte.getBytes("ISO-8859-1").length);
+        char[] chars = testByte.toCharArray();
+        for (char aChar : chars) {
+            System.out.println("第i个:" + aChar);
+        }
+
+
     }
 
 }

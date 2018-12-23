@@ -1,16 +1,10 @@
 package com.oj.judge.dao;
 
+
 import com.oj.judge.utils.StreamUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * 24140(3) 25572(3) 27252(3) 27640 //误差大概在5mb之内
@@ -27,7 +21,7 @@ public class JudgeDao {
         Runtime runtime = Runtime.getRuntime();
         Process process = runtime.exec("java -classpath /home/ming/Desktop/ Main");
 
-       Thread thread = new Thread(() -> {
+       /*Thread thread = new Thread(() -> {
             Long max = 0L;
             while (process.isAlive()) {
                 try {
@@ -49,30 +43,33 @@ public class JudgeDao {
                 }
             }
             System.out.println("limit:" + max);
-        });
-        thread.setPriority(10);
-        thread.start();
+        });*/
+        /*thread.setPriority(10);
+        thread.start();*/
 //        System.out.println(getPid(process));
 //        Thread.sleep(15000);
         Thread thread1 = new Thread(() -> {
-//          StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1004/input/1.txt");
+          StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1004/input/1.txt");
+            System.out.println("阻塞开始:");
             System.out.println(StreamUtil.getOutPut(process.getInputStream()));
-
-
+            System.out.println("阻塞结束啦");
 
         });
-        thread1.setPriority(2);
+
+//        runtime.exec("kill -9 "+process.pid());
+
         thread1.start();
-        Thread.sleep(2000);
+//        runtime.exec("kill -9 "+process.pid());
+        int exit = 0;
+        try {
+            exit = process.waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(exit);
 //        process.destroyForcibly();
-        runtime.exec("kill -9 "+process.pid());
-        System.out.println(process.isAlive()+"b");
-        Stream<ProcessHandle> descendants = process.descendants();
-        descendants.forEach(p ->{
-            p.destroyForcibly();
-        });
-        System.out.println(process.isAlive());
-        Stream<ProcessHandle> descendants1 = process.descendants();
+
+
 
     }
 

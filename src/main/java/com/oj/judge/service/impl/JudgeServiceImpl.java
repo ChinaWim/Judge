@@ -8,7 +8,7 @@ import com.oj.judge.entity.TestcaseResult;
 import com.oj.judge.service.JudgeService;
 import com.oj.judge.service.ProblemService;
 import com.oj.judge.service.UserService;
-import com.oj.judge.task.TestcaseInputTask;
+import com.oj.judge.jobs.TestcaseInputTask;
 import com.oj.judge.utils.FileUtil;
 import com.oj.judge.utils.StreamUtil;
 import com.oj.judge.utils.UUIDUtil;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -62,7 +61,8 @@ public class JudgeServiceImpl implements JudgeService {
             Process process = runtime.exec(CmdConst.compileCmd(type, userDirPath));
             compileErrorOutput = StreamUtil.getOutPut(process.getErrorStream());
         } catch (IOException e) {
-            logger.error(e.toString());
+            e.printStackTrace();
+            logger.error(e.getMessage());
             result.add(StatusConst.SYSTEM_ERROR.getDesc());
             return result;
         }
@@ -85,11 +85,11 @@ public class JudgeServiceImpl implements JudgeService {
         String problemDirPath = fileDirPath + "/" + problemId;
         String inputFileDirPath = problemDirPath + "/input";
         String outputFileDirPath = problemDirPath + "/output";
-
         //
         Problem problem = problemService.getProblemById(problemId);
         //题目输出结果
-        ProblemResult problemResult = problemService.getProblemResult(problemResultId);
+        ProblemResult problemResult = new ProblemResult();
+        problemResult.setId(problemResultId);
 
         //执行输入和输出
         File inputFileDir = new File(inputFileDirPath);
@@ -112,7 +112,7 @@ public class JudgeServiceImpl implements JudgeService {
             Integer status = null;
             Integer acCount = 0;
             List<TestcaseResult> testcaseResultList = new ArrayList<>();
-            Set<Map.Entry<Integer, TestcaseResult>> entrySet = problemResult.getResultTreeMap().entrySet();
+            Set<Map.Entry<Integer, TestcaseResult>> entrySet = problemResult.getResultMap().entrySet();
             for (Map.Entry<Integer, TestcaseResult> entry : entrySet) {
                 Integer testcaseNum = entry.getKey();
                 TestcaseResult testcaseResult = entry.getValue();

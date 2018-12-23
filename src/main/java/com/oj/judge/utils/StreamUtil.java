@@ -23,13 +23,13 @@ public class StreamUtil {
                 }
             }
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error(e.getMessage());
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.error(e.toString());
+                    logger.error(e.getMessage());
                 }
             }
         }
@@ -52,7 +52,7 @@ public class StreamUtil {
                 bufferedOutputStream.flush();
             }
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error(e.getMessage());
         } finally {
             try {
                 if (fileInputStream != null) {
@@ -62,7 +62,7 @@ public class StreamUtil {
                     bufferedOutputStream.close();
                 }
             } catch (IOException e) {
-                logger.error(e.toString());
+                logger.error(e.getMessage());
             }
         }
         return sb.toString();

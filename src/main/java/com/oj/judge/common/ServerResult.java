@@ -36,7 +36,6 @@ public class ServerResult {
 
 
 
-
     /**
      * 返回成功json
      *
@@ -99,13 +98,6 @@ public class ServerResult {
         jsonResultVO.setState(FAIL_STATE);
         return jsonResultVO;
     }
-
-
-
-
-
-
-
 
     public int getState() {
         return state;

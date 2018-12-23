@@ -1,9 +1,6 @@
-package com.oj.judge.controller;
+package com.oj.judge.rest;
 
-import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import com.oj.judge.common.StatusConst;
-import com.oj.judge.dao.ProblemMapper;
-import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.service.JudgeService;
 import com.oj.judge.service.ProblemService;
@@ -41,7 +38,7 @@ public class JudgeController {
     @RequestMapping("/submit")
     public Object submit(Integer userId, Integer compId, String sourceCode, String type, Integer problemId) throws IOException {
         if (sourceCode == null || "".equals(sourceCode) || type == null || "".equals(type) || problemId == null) {
-            return "输入不能为空";
+            return "输入参数不能为空";
         }
 
         //add 编译中
@@ -68,7 +65,8 @@ public class JudgeController {
                     judgeService.execute(userId, type, problemId,problemResultId,userDirPath);
                 });
             } catch (RejectedExecutionException e) {
-                logger.error(e.toString());
+                e.printStackTrace();
+                logger.error(e.getMessage());
                 return "服务器繁忙请稍等";
             }
 

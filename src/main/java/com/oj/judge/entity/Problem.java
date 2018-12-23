@@ -16,6 +16,8 @@ public class Problem implements Serializable {
 
     private String outputDesc;
 
+    private String tag;
+
     private Integer level;
 
     private Integer submitCount;
@@ -44,13 +46,14 @@ public class Problem implements Serializable {
 
     private Date updateTime;
 
-    public Problem(Integer id, Integer proCategoryId, String name, String content, String inputDesc, String outputDesc, Integer level, Integer submitCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer reCount, Integer ceCount, Integer waCount, Long time, Long memory, Integer flag, Date createTime, Date updateTime) {
+    public Problem(Integer id, Integer proCategoryId, String name, String content, String inputDesc, String outputDesc, String tag, Integer level, Integer submitCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer reCount, Integer ceCount, Integer waCount, Long time, Long memory, Integer flag, Date createTime, Date updateTime) {
         this.id = id;
         this.proCategoryId = proCategoryId;
         this.name = name;
         this.content = content;
         this.inputDesc = inputDesc;
         this.outputDesc = outputDesc;
+        this.tag = tag;
         this.level = level;
         this.submitCount = submitCount;
         this.acCount = acCount;
@@ -117,6 +120,14 @@ public class Problem implements Serializable {
 
     public void setOutputDesc(String outputDesc) {
         this.outputDesc = outputDesc == null ? null : outputDesc.trim();
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag == null ? null : tag.trim();
     }
 
     public Integer getLevel() {
@@ -241,6 +252,7 @@ public class Problem implements Serializable {
                 ", content='" + content + '\'' +
                 ", inputDesc='" + inputDesc + '\'' +
                 ", outputDesc='" + outputDesc + '\'' +
+                ", tag='" + tag + '\'' +
                 ", level=" + level +
                 ", submitCount=" + submitCount +
                 ", acCount=" + acCount +

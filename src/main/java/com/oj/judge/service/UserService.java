@@ -13,5 +13,4 @@ public interface UserService {
 
     ServerResult addSolutionCount(Integer userId);
 
-    ServerResult addSignCount(Integer userId);
 }

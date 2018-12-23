@@ -1,9 +1,7 @@
 package com.oj.judge.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * @author m969130721@163.com
@@ -23,18 +21,6 @@ public class FileUtil {
             outputStream.write(bytes, 0, bytes.length);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-
-    public static boolean deleteExeFile(String dir, String codeType) {
-        switch (codeType) {
-            case "java": {
-                return deleteFile(dir + "/" + "Main.class");
-            }
-            default: {
-                return false;
-            }
         }
     }
 

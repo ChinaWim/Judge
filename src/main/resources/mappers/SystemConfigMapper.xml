@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oj.judge.dao.SystemConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.oj.judge.entity.SystemConfig" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="sys_key" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="sys_value1" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="sys_value2" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="content" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, sys_key, sys_value1, sys_value2, content, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from system_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getByKey" resultType="com.oj.judge.entity.SystemConfig" parameterType="string">
+    select <include refid="Base_Column_List"></include>
+    from system_config
+    where sys_key = #{key}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from system_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyProperty="id" parameterType="com.oj.judge.entity.SystemConfig" >
+    insert into system_config (id, sys_key, sys_value1, 
+      sys_value2, content, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{sysKey,jdbcType=VARCHAR}, #{sysValue1,jdbcType=VARCHAR}, 
+      #{sysValue2,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+     )
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.oj.judge.entity.SystemConfig" >
+    insert into system_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="sysKey != null" >
+        sys_key,
+      </if>
+      <if test="sysValue1 != null" >
+        sys_value1,
+      </if>
+      <if test="sysValue2 != null" >
+        sys_value2,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="sysKey != null" >
+        #{sysKey,jdbcType=VARCHAR},
+      </if>
+      <if test="sysValue1 != null" >
+        #{sysValue1,jdbcType=VARCHAR},
+      </if>
+      <if test="sysValue2 != null" >
+        #{sysValue2,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oj.judge.entity.SystemConfig" >
+    update system_config
+    <set >
+      <if test="sysKey != null" >
+        sys_key = #{sysKey,jdbcType=VARCHAR},
+      </if>
+      <if test="sysValue1 != null" >
+        sys_value1 = #{sysValue1,jdbcType=VARCHAR},
+      </if>
+      <if test="sysValue2 != null" >
+        sys_value2 = #{sysValue2,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.SystemConfig" >
+    update system_config
+    set sys_key = #{sysKey,jdbcType=VARCHAR},
+      sys_value1 = #{sysValue1,jdbcType=VARCHAR},
+      sys_value2 = #{sysValue2,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

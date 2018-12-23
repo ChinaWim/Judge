@@ -60,10 +60,4 @@ public class UserServiceImpl implements UserService {
         int effect = userMapper.addSolutionCount(userId);
         return effect > 0 ? ServerResult.success() : ServerResult.fail();
     }
-
-    @Override
-    public ServerResult addSignCount(Integer userId) {
-        int effect = userMapper.addSignCount(userId);
-        return effect > 0 ? ServerResult.success() : ServerResult.fail();
-    }
 }

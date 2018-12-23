@@ -214,11 +214,6 @@
     where id = #{userId}
   </update>
 
-  <update id="addSignCount" parameterType="int">
-    update user set sign_count = sign_count + 1
-    where id = #{userId}
-  </update>
-
   <update id="addAcCount" parameterType="int">
     update user set ac_count = ac_count + 1 , submit_count = submit_count + 1
     where id = #{userId}

@@ -20,7 +20,6 @@ public interface ProblemService {
 
     ProblemResult getProblemResult(Integer problemResultId);
 
-
     ServerResult insertProblemResult(ProblemResult result);
 
     ServerResult updateProblem(Problem problem);
