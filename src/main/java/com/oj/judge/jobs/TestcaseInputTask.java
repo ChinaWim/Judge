@@ -83,8 +83,7 @@ public class TestcaseInputTask implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-
-            testcaseResult.setStatus(StatusConst.SYSTEM_ERROR.getStatus());
+            testcaseResult.setStatus(StatusConst.RUNTIME_ERROR.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } finally {
             //关闭子进程
@@ -120,7 +119,7 @@ public class TestcaseInputTask implements Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
-            testcaseResult.setStatus(StatusConst.SYSTEM_ERROR.getStatus());
+            testcaseResult.setStatus(StatusConst.RUNTIME_ERROR.getStatus());
             logger.error(e.getMessage());
         }
     }

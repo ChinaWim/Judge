@@ -7,13 +7,9 @@ package com.oj.judge.common;
  */
 public enum StatusConst {
 
-//     0 编译中　1 ac 2 ce 3 pe 4 tle 5 me 6 se 7 re ８ wa　９队列中 10判题中
+// 0 编译中　1 ac 2 ce 3 pe 4 re 5 tle 6 me 7 wa　8队列中 9判题中
 
     COMPILE_SUCCESS(200, "COMPILE SUCCESS"),
-
-    JUDGING(10, "JUDGING"),
-
-    QUEUING(9, "QUEUING"),
 
     COMPILING(0, "COMPILING"),
 
@@ -23,15 +19,18 @@ public enum StatusConst {
 
     PRESENTATION_ERROR(3, "PE"),
 
-    TIME_LIMIT_EXCEEDED(4, "TLE"),
+    RUNTIME_ERROR(4, "RE"),
 
-    MEMORY_LIMIT_EXCEEDED(5, "MLE"),
+    TIME_LIMIT_EXCEEDED(5, "TLE"),
 
-    SYSTEM_ERROR(6, "SE"),
+    MEMORY_LIMIT_EXCEEDED(6, "MLE"),
 
-    RUNTIME_ERROR(7, "RE"),
+    WRONG_ANSWER(7, "WA"),
 
-    WRONG_ANSWER(8, "WA");
+    QUEUING(8, "QUEUING"),
+
+    JUDGING(9, "JUDGING");
+
 
     StatusConst(Integer status, String desc) {
         this.status = status;

@@ -63,7 +63,7 @@ public class JudgeServiceImpl implements JudgeService {
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            result.add(StatusConst.SYSTEM_ERROR.getDesc());
+            result.add(StatusConst.RUNTIME_ERROR.getDesc());
             return result;
         }
         if (compileErrorOutput == null || "".equals(compileErrorOutput)) {
@@ -123,11 +123,7 @@ public class JudgeServiceImpl implements JudgeService {
                 if (testcaseResult.getTime() != null && testcaseResult.getTime() > maxTime) {
                     maxTime = testcaseResult.getTime();
                 }
-
-                if (StatusConst.SYSTEM_ERROR.getStatus().equals(testcaseResult.getStatus())) {
-                    status = StatusConst.SYSTEM_ERROR.getStatus();
-                }
-                if (status == null && StatusConst.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
+                if (StatusConst.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
                     status = StatusConst.RUNTIME_ERROR.getStatus();
                 }
                 if (status == null && StatusConst.PRESENTATION_ERROR.getStatus().equals(testcaseResult.getStatus())) {
@@ -166,14 +162,14 @@ public class JudgeServiceImpl implements JudgeService {
             userService.addCount(userId, StatusConst.getStatusConst(status));
             if (StatusConst.ACCEPTED.getStatus().equals(status)) {
                 int count = problemService.countProblemResult(userId, problemId, status);
-                if (count == 0){
+                if (count == 0) {
                     userService.addSolutionCount(userId);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
             //执行脚本错误或闭锁中断Exception update database
-            problemService.updateProblemResultStatus(problemResultId, StatusConst.SYSTEM_ERROR.getStatus());
+            problemService.updateProblemResultStatus(problemResultId, StatusConst.RUNTIME_ERROR.getStatus());
             //todo
             logger.error(e.getMessage());
         }
