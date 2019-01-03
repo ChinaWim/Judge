@@ -46,7 +46,7 @@ public class JudgeServiceImpl implements JudgeService {
     //执行程序同样存在这个问题
     //解决办法一：uuid文件，只删除文件，不删除文件夹
     //解决办法二：限制用户提交同一个题目５秒一次
-    //解决办法三：文件夹＋时间戳，推荐
+    //解决办法三：文件夹＋时间戳，推荐 (已选择)
 
     @Override
     public List<String> compile(Integer userId, String sourceCode, String type, Integer problemId) {

@@ -61,9 +61,7 @@ public class JudgeController {
             //update 队列中
             problemService.updateProblemResultStatus(problemResultId, StatusConst.QUEUING.getStatus());
             try {
-                executorService.execute(() -> {
-                    judgeService.execute(userId, type, problemId,problemResultId,userDirPath);
-                });
+                executorService.execute(() -> judgeService.execute(userId, type, problemId,problemResultId,userDirPath));
             } catch (RejectedExecutionException e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());

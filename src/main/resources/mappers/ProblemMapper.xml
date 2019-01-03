@@ -4,14 +4,12 @@
   <resultMap id="BaseResultMap" type="com.oj.judge.entity.Problem" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="pro_category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="content" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="input_desc" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="output_desc" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="testcase_input" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="testcase_output" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="tag" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="level" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="submit_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="ac_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -29,12 +27,12 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, pro_category_id, name, content, input_desc, output_desc, testcase_input, testcase_output, 
-    tag, level, submit_count, ac_count, tle_count, pe_count, me_count, re_count, ce_count, 
-    wa_count, time, memory, flag, create_time,update_time
+    id, name, content, input_desc, output_desc, testcase_input, testcase_output, level, 
+    submit_count, ac_count, tle_count, pe_count, me_count, re_count, ce_count, wa_count, 
+    time, memory, flag, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from problem
     where id = #{id,jdbcType=INTEGER}
@@ -44,29 +42,28 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyProperty="id" parameterType="com.oj.judge.entity.Problem" >
-    insert into problem (id, pro_category_id, name, 
-      content, input_desc, output_desc, 
-      testcase_input, testcase_output, tag, 
-      level, submit_count, ac_count, 
-      tle_count, pe_count, me_count, 
-      re_count, ce_count, wa_count, 
-      time, memory, flag, create_time)
-    values (#{id,jdbcType=INTEGER}, #{proCategoryId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{inputDesc,jdbcType=VARCHAR}, #{outputDesc,jdbcType=VARCHAR}, 
-      #{testcaseInput,jdbcType=VARCHAR}, #{testcaseOutput,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR}, 
-      #{level,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, #{acCount,jdbcType=INTEGER}, 
-      #{tleCount,jdbcType=INTEGER}, #{peCount,jdbcType=INTEGER}, #{meCount,jdbcType=INTEGER}, 
-      #{reCount,jdbcType=INTEGER}, #{ceCount,jdbcType=INTEGER}, #{waCount,jdbcType=INTEGER}, 
-      #{time,jdbcType=BIGINT}, #{memory,jdbcType=BIGINT}, #{flag,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+    insert into problem (id, name, content, 
+      input_desc, output_desc, testcase_input, 
+      testcase_output, level, submit_count, 
+      ac_count, tle_count, pe_count, 
+      me_count, re_count, ce_count, 
+      wa_count, time, memory, 
+      flag, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{inputDesc,jdbcType=VARCHAR}, #{outputDesc,jdbcType=VARCHAR}, #{testcaseInput,jdbcType=VARCHAR}, 
+      #{testcaseOutput,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, 
+      #{acCount,jdbcType=INTEGER}, #{tleCount,jdbcType=INTEGER}, #{peCount,jdbcType=INTEGER}, 
+      #{meCount,jdbcType=INTEGER}, #{reCount,jdbcType=INTEGER}, #{ceCount,jdbcType=INTEGER}, 
+      #{waCount,jdbcType=INTEGER}, #{time,jdbcType=BIGINT}, #{memory,jdbcType=BIGINT}, 
+      #{flag,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.oj.judge.entity.Problem" >
     insert into problem
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
-      </if>
-      <if test="proCategoryId != null" >
-        pro_category_id,
       </if>
       <if test="name != null" >
         name,
@@ -85,9 +82,6 @@
       </if>
       <if test="testcaseOutput != null" >
         testcase_output,
-      </if>
-      <if test="tag != null" >
-        tag,
       </if>
       <if test="level != null" >
         level,
@@ -133,9 +127,6 @@
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="proCategoryId != null" >
-        #{proCategoryId,jdbcType=INTEGER},
-      </if>
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
@@ -153,9 +144,6 @@
       </if>
       <if test="testcaseOutput != null" >
         #{testcaseOutput,jdbcType=VARCHAR},
-      </if>
-      <if test="tag != null" >
-        #{tag,jdbcType=VARCHAR},
       </if>
       <if test="level != null" >
         #{level,jdbcType=INTEGER},
@@ -201,9 +189,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.oj.judge.entity.Problem" >
     update problem
     <set >
-      <if test="proCategoryId != null" >
-        pro_category_id = #{proCategoryId,jdbcType=INTEGER},
-      </if>
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -221,9 +206,6 @@
       </if>
       <if test="testcaseOutput != null" >
         testcase_output = #{testcaseOutput,jdbcType=VARCHAR},
-      </if>
-      <if test="tag != null" >
-        tag = #{tag,jdbcType=VARCHAR},
       </if>
       <if test="level != null" >
         level = #{level,jdbcType=INTEGER},
@@ -269,14 +251,12 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.Problem" >
     update problem
-    set pro_category_id = #{proCategoryId,jdbcType=INTEGER},
-      name = #{name,jdbcType=VARCHAR},
+    set name = #{name,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
       input_desc = #{inputDesc,jdbcType=VARCHAR},
       output_desc = #{outputDesc,jdbcType=VARCHAR},
       testcase_input = #{testcaseInput,jdbcType=VARCHAR},
       testcase_output = #{testcaseOutput,jdbcType=VARCHAR},
-      tag = #{tag,jdbcType=VARCHAR},
       level = #{level,jdbcType=INTEGER},
       submit_count = #{submitCount,jdbcType=INTEGER},
       ac_count = #{acCount,jdbcType=INTEGER},
@@ -292,7 +272,6 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
 
 
 

@@ -6,8 +6,6 @@ import java.util.Date;
 public class Problem implements Serializable {
     private Integer id;
 
-    private Integer proCategoryId;
-
     private String name;
 
     private String content;
@@ -19,8 +17,6 @@ public class Problem implements Serializable {
     private String testcaseInput;
 
     private String testcaseOutput;
-
-    private String tag;
 
     private Integer level;
 
@@ -50,16 +46,14 @@ public class Problem implements Serializable {
 
     private Date updateTime;
 
-    public Problem(Integer id, Integer proCategoryId, String name, String content, String inputDesc, String outputDesc, String testcaseInput, String testcaseOutput, String tag, Integer level, Integer submitCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer reCount, Integer ceCount, Integer waCount, Long time, Long memory, Integer flag, Date createTime, Date updateTime) {
+    public Problem(Integer id, String name, String content, String inputDesc, String outputDesc, String testcaseInput, String testcaseOutput, Integer level, Integer submitCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer reCount, Integer ceCount, Integer waCount, Long time, Long memory, Integer flag, Date createTime, Date updateTime) {
         this.id = id;
-        this.proCategoryId = proCategoryId;
         this.name = name;
         this.content = content;
         this.inputDesc = inputDesc;
         this.outputDesc = outputDesc;
         this.testcaseInput = testcaseInput;
         this.testcaseOutput = testcaseOutput;
-        this.tag = tag;
         this.level = level;
         this.submitCount = submitCount;
         this.acCount = acCount;
@@ -86,14 +80,6 @@ public class Problem implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getProCategoryId() {
-        return proCategoryId;
-    }
-
-    public void setProCategoryId(Integer proCategoryId) {
-        this.proCategoryId = proCategoryId;
     }
 
     public String getName() {
@@ -142,14 +128,6 @@ public class Problem implements Serializable {
 
     public void setTestcaseOutput(String testcaseOutput) {
         this.testcaseOutput = testcaseOutput == null ? null : testcaseOutput.trim();
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag == null ? null : tag.trim();
     }
 
     public Integer getLevel() {
@@ -264,18 +242,17 @@ public class Problem implements Serializable {
         this.updateTime = updateTime;
     }
 
+
     @Override
     public String toString() {
         return "Problem{" +
                 "id=" + id +
-                ", proCategoryId=" + proCategoryId +
                 ", name='" + name + '\'' +
                 ", content='" + content + '\'' +
                 ", inputDesc='" + inputDesc + '\'' +
                 ", outputDesc='" + outputDesc + '\'' +
                 ", testcaseInput='" + testcaseInput + '\'' +
                 ", testcaseOutput='" + testcaseOutput + '\'' +
-                ", tag='" + tag + '\'' +
                 ", level=" + level +
                 ", submitCount=" + submitCount +
                 ", acCount=" + acCount +
