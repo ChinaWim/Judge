@@ -23,8 +23,6 @@ public interface ProblemResultMapper {
 
     List<ProblemResult> listByUserIdProblemId(@Param("userId") Integer userId,@Param("problemId") Integer problemId);
 
-    List<ProblemResult> listByUserIdProblemId(@Param("userId") Integer userId,@Param("problemId") Integer problemId,@Param("status")Integer status);
-
     int countByUserIdProblemIdStatus(@Param("userId") Integer userId,@Param("problemId") Integer problemId,@Param("status")Integer status);
 
 }

@@ -1,9 +1,13 @@
 package com.oj.judge.entity;
 
+
 import java.io.Serializable;
 import java.util.Date;
 
-public class User implements Serializable {
+public class User implements Serializable{
+
+    private static final long serialVersionUID = -3145390293109713500L;
+
     private Integer id;
 
     private String username;
@@ -23,6 +27,8 @@ public class User implements Serializable {
     private String email;
 
     private String phone;
+
+    private String school;
 
     private Integer signCount;
 
@@ -52,7 +58,7 @@ public class User implements Serializable {
 
     private Date updateTime;
 
-    public User(Integer id, String username, String password, String name, String mood, String avatar, Integer flag, String sex, String email, String phone, Integer signCount, Integer submitCount, Integer solutionCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer ceCount, Integer reCount, Integer waCount, Integer goldCount, Date lastLoginTime, Date createTime, Date updateTime) {
+    public User(Integer id, String username, String password, String name, String mood, String avatar, Integer flag, String sex, String email, String phone, String school, Integer signCount, Integer submitCount, Integer solutionCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer ceCount, Integer reCount, Integer waCount, Integer goldCount, Date lastLoginTime, Date createTime, Date updateTime) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -63,6 +69,7 @@ public class User implements Serializable {
         this.sex = sex;
         this.email = email;
         this.phone = phone;
+        this.school = school;
         this.signCount = signCount;
         this.submitCount = submitCount;
         this.solutionCount = solutionCount;
@@ -91,13 +98,6 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
-    }
 
     public String getPassword() {
         return password;
@@ -161,6 +161,14 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school == null ? null : school.trim();
     }
 
     public Integer getSignCount() {
@@ -288,6 +296,7 @@ public class User implements Serializable {
                 ", sex='" + sex + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", school='" + school + '\'' +
                 ", signCount=" + signCount +
                 ", submitCount=" + submitCount +
                 ", solutionCount=" + solutionCount +

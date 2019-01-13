@@ -13,6 +13,7 @@
       <arg column="sex" jdbcType="CHAR" javaType="java.lang.String" />
       <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="school" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="sign_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="submit_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="solution_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -29,9 +30,11 @@
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
+
+
   <sql id="Base_Column_List" >
-    id, username, password, name, mood, avatar, flag, sex, email, phone, sign_count, 
-    submit_count, solution_count, ac_count, tle_count, pe_count, me_count, ce_count,
+    id, username, password, name, mood, avatar, flag, sex, email, phone, school, sign_count, 
+    submit_count, solution_count, ac_count, tle_count, pe_count, me_count, ce_count, 
     re_count, wa_count, gold_count, last_login_time, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -48,19 +51,21 @@
     insert into user (id, username, password, 
       name, mood, avatar, 
       flag, sex, email, phone, 
-      sign_count, submit_count, solution_count,
-      ac_count, tle_count, pe_count, 
-      me_count, ce_count, re_count, 
-      wa_count, gold_count, last_login_time, 
-      create_time)
+      school, sign_count, submit_count, 
+      solution_count, ac_count, tle_count, 
+      pe_count, me_count, ce_count, 
+      re_count, wa_count, gold_count, 
+      last_login_time, create_time
+      )
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{name,jdbcType=VARCHAR}, #{mood,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, 
       #{flag,jdbcType=INTEGER}, #{sex,jdbcType=CHAR}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{signCount,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, #{solutionCount,jdbcType=INTEGER},
-      #{acCount,jdbcType=INTEGER}, #{tleCount,jdbcType=INTEGER}, #{peCount,jdbcType=INTEGER}, 
-      #{meCount,jdbcType=INTEGER}, #{ceCount,jdbcType=INTEGER}, #{reCount,jdbcType=INTEGER}, 
-      #{waCount,jdbcType=INTEGER}, #{goldCount,jdbcType=INTEGER}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP})
+      #{school,jdbcType=VARCHAR}, #{signCount,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, 
+      #{solutionCount,jdbcType=INTEGER}, #{acCount,jdbcType=INTEGER}, #{tleCount,jdbcType=INTEGER}, 
+      #{peCount,jdbcType=INTEGER}, #{meCount,jdbcType=INTEGER}, #{ceCount,jdbcType=INTEGER}, 
+      #{reCount,jdbcType=INTEGER}, #{waCount,jdbcType=INTEGER}, #{goldCount,jdbcType=INTEGER}, 
+      #{lastLoginTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.oj.judge.entity.User" >
     insert into user
@@ -94,6 +99,9 @@
       </if>
       <if test="phone != null" >
         phone,
+      </if>
+      <if test="school != null" >
+        school,
       </if>
       <if test="signCount != null" >
         sign_count,
@@ -166,6 +174,9 @@
       <if test="phone != null" >
         #{phone,jdbcType=VARCHAR},
       </if>
+      <if test="school != null" >
+        #{school,jdbcType=VARCHAR},
+      </if>
       <if test="signCount != null" >
         #{signCount,jdbcType=INTEGER},
       </if>
@@ -207,6 +218,109 @@
       </if>
     </trim>
   </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oj.judge.entity.User" >
+    update user
+    <set >
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mood != null" >
+        mood = #{mood,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null" >
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=CHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="school != null" >
+        school = #{school,jdbcType=VARCHAR},
+      </if>
+      <if test="signCount != null" >
+        sign_count = #{signCount,jdbcType=INTEGER},
+      </if>
+      <if test="submitCount != null" >
+        submit_count = #{submitCount,jdbcType=INTEGER},
+      </if>
+      <if test="solutionCount != null" >
+        solution_count = #{solutionCount,jdbcType=INTEGER},
+      </if>
+      <if test="acCount != null" >
+        ac_count = #{acCount,jdbcType=INTEGER},
+      </if>
+      <if test="tleCount != null" >
+        tle_count = #{tleCount,jdbcType=INTEGER},
+      </if>
+      <if test="peCount != null" >
+        pe_count = #{peCount,jdbcType=INTEGER},
+      </if>
+      <if test="meCount != null" >
+        me_count = #{meCount,jdbcType=INTEGER},
+      </if>
+      <if test="ceCount != null" >
+        ce_count = #{ceCount,jdbcType=INTEGER},
+      </if>
+      <if test="reCount != null" >
+        re_count = #{reCount,jdbcType=INTEGER},
+      </if>
+      <if test="waCount != null" >
+        wa_count = #{waCount,jdbcType=INTEGER},
+      </if>
+      <if test="goldCount != null" >
+        gold_count = #{goldCount,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginTime != null" >
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.User" >
+    update user
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      mood = #{mood,jdbcType=VARCHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER},
+      sex = #{sex,jdbcType=CHAR},
+      email = #{email,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      school = #{school,jdbcType=VARCHAR},
+      sign_count = #{signCount,jdbcType=INTEGER},
+      submit_count = #{submitCount,jdbcType=INTEGER},
+      solution_count = #{solutionCount,jdbcType=INTEGER},
+      ac_count = #{acCount,jdbcType=INTEGER},
+      tle_count = #{tleCount,jdbcType=INTEGER},
+      pe_count = #{peCount,jdbcType=INTEGER},
+      me_count = #{meCount,jdbcType=INTEGER},
+      ce_count = #{ceCount,jdbcType=INTEGER},
+      re_count = #{reCount,jdbcType=INTEGER},
+      wa_count = #{waCount,jdbcType=INTEGER},
+      gold_count = #{goldCount,jdbcType=INTEGER},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
 
 
   <update id="addSolutionCount" parameterType="int">
@@ -251,105 +365,4 @@
 
 
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.oj.judge.entity.User" >
-    update user
-    <set >
-      <if test="username != null" >
-        username = #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null" >
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="mood != null" >
-        mood = #{mood,jdbcType=VARCHAR},
-      </if>
-      <if test="avatar != null" >
-        avatar = #{avatar,jdbcType=VARCHAR},
-      </if>
-      <if test="flag != null" >
-        flag = #{flag,jdbcType=INTEGER},
-      </if>
-      <if test="sex != null" >
-        sex = #{sex,jdbcType=CHAR},
-      </if>
-      <if test="email != null" >
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null" >
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="signCount != null" >
-        sign_count = #{signCount,jdbcType=INTEGER},
-      </if>
-      <if test="submitCount != null" >
-        submit_count = #{submitCount,jdbcType=INTEGER},
-      </if>
-      <if test="solutionCount != null" >
-        solution_count = #{solutionCount,jdbcType=INTEGER},
-      </if>
-      <if test="acCount != null" >
-        ac_count = #{acCount,jdbcType=INTEGER},
-      </if>
-      <if test="tleCount != null" >
-        tle_count = #{tleCount,jdbcType=INTEGER},
-      </if>
-      <if test="peCount != null" >
-        pe_count = #{peCount,jdbcType=INTEGER},
-      </if>
-      <if test="meCount != null" >
-        me_count = #{meCount,jdbcType=INTEGER},
-      </if>
-      <if test="ceCount != null" >
-        ce_count = #{ceCount,jdbcType=INTEGER},
-      </if>
-      <if test="reCount != null" >
-        re_count = #{reCount,jdbcType=INTEGER},
-      </if>
-      <if test="waCount != null" >
-        wa_count = #{waCount,jdbcType=INTEGER},
-      </if>
-      <if test="goldCount != null" >
-        gold_count = #{goldCount,jdbcType=INTEGER},
-      </if>
-      <if test="lastLoginTime != null" >
-        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
-
-
-  <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.User" >
-    update user
-    set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      mood = #{mood,jdbcType=VARCHAR},
-      avatar = #{avatar,jdbcType=VARCHAR},
-      flag = #{flag,jdbcType=INTEGER},
-      sex = #{sex,jdbcType=CHAR},
-      email = #{email,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      sign_count = #{signCount,jdbcType=INTEGER},
-      submit_count = #{submitCount,jdbcType=INTEGER},
-      solution_count = #{solutionCount,jdbcType=INTEGER},
-      ac_count = #{acCount,jdbcType=INTEGER},
-      tle_count = #{tleCount,jdbcType=INTEGER},
-      pe_count = #{peCount,jdbcType=INTEGER},
-      me_count = #{meCount,jdbcType=INTEGER},
-      ce_count = #{ceCount,jdbcType=INTEGER},
-      re_count = #{reCount,jdbcType=INTEGER},
-      wa_count = #{waCount,jdbcType=INTEGER},
-      gold_count = #{goldCount,jdbcType=INTEGER},
-      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 </mapper>
