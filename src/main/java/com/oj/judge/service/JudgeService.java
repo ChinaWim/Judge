@@ -2,7 +2,6 @@ package com.oj.judge.service;
 
 import com.oj.judge.entity.ProblemResult;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**

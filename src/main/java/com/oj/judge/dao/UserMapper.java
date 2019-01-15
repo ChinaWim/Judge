@@ -2,6 +2,7 @@ package com.oj.judge.dao;
 
 
 import com.oj.judge.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,7 +17,7 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
-    int addSolutionCount(Integer userId);
+    int addSolutionCount(@Param("userId") Integer userId, @Param("problemId")Integer problemId);
 
     int addAcCount(Integer userId);
 

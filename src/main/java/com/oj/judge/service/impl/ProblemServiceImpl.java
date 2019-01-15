@@ -1,6 +1,6 @@
 package com.oj.judge.service.impl;
 
-import com.oj.judge.common.ServerResponse;
+import com.oj.judge.response.ServerResponse;
 import com.oj.judge.common.StatusConst;
 import com.oj.judge.dao.ProblemMapper;
 import com.oj.judge.dao.ProblemResultMapper;

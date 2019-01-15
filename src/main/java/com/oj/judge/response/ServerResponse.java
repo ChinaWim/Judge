@@ -1,4 +1,4 @@
-package com.oj.judge.common;
+package com.oj.judge.response;
 
 /**
  * 返回给View的 Json Object

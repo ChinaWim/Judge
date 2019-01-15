@@ -138,7 +138,6 @@ public class JudgeServiceImpl implements JudgeService {
                 if (status == null && StatusConst.MEMORY_LIMIT_EXCEEDED.getStatus().equals(testcaseResult.getStatus())) {
                     status = StatusConst.MEMORY_LIMIT_EXCEEDED.getStatus();
                 }
-
                 if (StatusConst.ACCEPTED.getStatus().equals(testcaseResult.getStatus())) {
                     acCount++;
                 }
@@ -147,6 +146,8 @@ public class JudgeServiceImpl implements JudgeService {
 
             if (acCount == testcaseResultList.size()) {
                 status = StatusConst.ACCEPTED.getStatus();
+                //user solutionCount
+                userService.addSolutionCount(userId, problemId);
             }
 
             //insertBatch testcase
@@ -160,12 +161,8 @@ public class JudgeServiceImpl implements JudgeService {
             //add count
             problemService.addProblemCount(problemId, StatusConst.getStatusConst(status));
             userService.addCount(userId, StatusConst.getStatusConst(status));
-            if (StatusConst.ACCEPTED.getStatus().equals(status)) {
-                int count = problemService.countProblemResult(userId, problemId, status);
-                if (count == 0) {
-                    userService.addSolutionCount(userId);
-                }
-            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
             //执行脚本错误或闭锁中断Exception update database

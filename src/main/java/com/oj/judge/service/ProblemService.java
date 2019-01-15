@@ -1,6 +1,6 @@
 package com.oj.judge.service;
 
-import com.oj.judge.common.ServerResponse;
+import com.oj.judge.response.ServerResponse;
 import com.oj.judge.common.StatusConst;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;

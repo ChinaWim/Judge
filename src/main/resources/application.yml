@@ -33,3 +33,12 @@ mybatis:
 #==================== project Setting =====================#
 file:
   dir: /home/ming/Music
+
+#====================rocketMQ Setting =====================#
+rocketmq:
+  nameserver: 192.168.25.129:9876;192.168.25.130:9876
+  topic: ojcode
+  consumer:
+    group: judgeConsumerGroup
+    max-thread: 128
+    min-thread: 32

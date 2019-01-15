@@ -1,6 +1,6 @@
 package com.oj.judge.service;
 
-import com.oj.judge.common.ServerResponse;
+import com.oj.judge.response.ServerResponse;
 import com.oj.judge.common.StatusConst;
 
 /**
@@ -11,6 +11,6 @@ public interface UserService {
 
     ServerResponse addCount(Integer userId, StatusConst statusConst);
 
-    ServerResponse addSolutionCount(Integer userId);
+    ServerResponse addSolutionCount(Integer userId,Integer problemId);
 
 }

@@ -1,6 +1,6 @@
 package com.oj.judge.service.impl;
 
-import com.oj.judge.common.ServerResponse;
+import com.oj.judge.response.ServerResponse;
 import com.oj.judge.common.StatusConst;
 import com.oj.judge.dao.RoleMapper;
 import com.oj.judge.dao.UserMapper;
@@ -56,8 +56,8 @@ public class UserServiceImpl implements UserService {
 
     }
     @Override
-    public ServerResponse addSolutionCount(Integer userId) {
-        int effect = userMapper.addSolutionCount(userId);
+    public ServerResponse addSolutionCount(Integer userId,Integer problemId) {
+        int effect = userMapper.addSolutionCount(userId,problemId);
         return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 }
