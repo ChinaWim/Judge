@@ -8,6 +8,7 @@ import java.io.Serializable;
  */
 public class Code implements Serializable {
 
+
     private static final long serialVersionUID = -201455056342317704L;
 
     private Integer problemResultId;
