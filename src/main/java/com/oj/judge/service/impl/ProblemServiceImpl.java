@@ -1,7 +1,7 @@
 package com.oj.judge.service.impl;
 
 import com.oj.judge.response.ServerResponse;
-import com.oj.judge.common.StatusConst;
+import com.oj.judge.common.JudgeStatusEnum;
 import com.oj.judge.dao.ProblemMapper;
 import com.oj.judge.dao.ProblemResultMapper;
 import com.oj.judge.dao.TestcaseResultMapper;
@@ -92,27 +92,27 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResponse addProblemCount(Integer problemId, StatusConst statusConst) {
+    public ServerResponse addProblemCount(Integer problemId, JudgeStatusEnum statusConst) {
         int effect = 0;
-        if (Objects.equals(StatusConst.ACCEPTED, statusConst)) {
+        if (Objects.equals(JudgeStatusEnum.ACCEPTED, statusConst)) {
             effect = problemMapper.addAcCount(problemId);
 
-        } else if (Objects.equals(StatusConst.TIME_LIMIT_EXCEEDED, statusConst)) {
+        } else if (Objects.equals(JudgeStatusEnum.TIME_LIMIT_EXCEEDED, statusConst)) {
             effect = problemMapper.addTleCount(problemId);
 
-        } else if (Objects.equals(StatusConst.PRESENTATION_ERROR, statusConst)) {
+        } else if (Objects.equals(JudgeStatusEnum.PRESENTATION_ERROR, statusConst)) {
             effect = problemMapper.addPeCount(problemId);
 
-        } else if (Objects.equals(StatusConst.MEMORY_LIMIT_EXCEEDED, statusConst)) {
+        } else if (Objects.equals(JudgeStatusEnum.MEMORY_LIMIT_EXCEEDED, statusConst)) {
             effect = problemMapper.addMeCount(problemId);
 
-        } else if (Objects.equals(StatusConst.COMPILE_ERROR, statusConst)) {
+        } else if (Objects.equals(JudgeStatusEnum.COMPILE_ERROR, statusConst)) {
             effect = problemMapper.addCeCount(problemId);
 
-        } else if (Objects.equals(StatusConst.RUNTIME_ERROR, statusConst)) {
+        } else if (Objects.equals(JudgeStatusEnum.RUNTIME_ERROR, statusConst)) {
             effect = problemMapper.addReCount(problemId);
 
-        } else if (Objects.equals(StatusConst.WRONG_ANSWER, statusConst)) {
+        } else if (Objects.equals(JudgeStatusEnum.WRONG_ANSWER, statusConst)) {
             effect = problemMapper.addWaCount(problemId);
         }
 

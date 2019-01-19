@@ -1,80 +1,86 @@
 package com.oj.judge.common;
 
 /**
+ *
  * @author m969130721@163.com
  * @date 18-11-27 下午3:29
  */
 public class CmdConst {
 
+
+    /**
+     * 获取编译脚本命令
+     * @param type
+     * @param dir
+     * @return
+     */
     public static String compileCmd(String type, String dir) {
-        switch (type) {
-            case "java": {
-                if (dir != null && !"".equals(dir)) {
-                    return "javac " + dir + "/Main.java";
-                } else {
-                    return "javac Main.java";
-                }
+
+        if (LanguageEnum.JAVA8.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                return "javac " + dir + "/Main.java";
+            } else {
+                return "javac Main.java";
             }
-            case "c": {
-                if (dir != null && !"".equals(dir)) {
-                    return "gcc " + dir + "/Main.c -o " + dir + "/C.out";
-                } else {
-                    return "gcc Main.c -o C.out";
-                }
+        } else if (LanguageEnum.C.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                return "gcc " + dir + "/Main.c -o " + dir + "/C.out";
+            } else {
+                return "gcc Main.c -o C.out";
             }
-            case "c++": {
-                if (dir != null && !"".equals(dir)) {
-                    return "g++ " + dir + "/Main.c++ -o " + dir + "/C++.out";
-                } else {
-                    return "g++ Main.c++ -o C++.out";
-                }
+        } else if (LanguageEnum.CPP.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                return "g++ " + dir + "/Main.c++ -o " + dir + "/C++.out";
+            } else {
+                return "g++ Main.c++ -o C++.out";
             }
-            default: {
-                return "";
-            }
+        } else {
+            return null;
         }
     }
 
+
+    /**
+     * 获取运行脚本实例ProcessBuilder
+     * @param type
+     * @param dir
+     * @return
+     */
     public static ProcessBuilder executeCmd(String type, String dir) {
         ProcessBuilder builder = null;
-        switch (type) {
-            case "java": {
-                if (dir != null && !"".equals(dir)) {
-                    builder = new ProcessBuilder("java", "-classpath", dir, "Main");
-                } else {
-                    builder = new ProcessBuilder("java", "Main");
-                }
-                break;
+
+        if (LanguageEnum.JAVA8.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                builder = new ProcessBuilder("java", "-classpath", dir, "Main");
+            } else {
+                builder = new ProcessBuilder("java", "Main");
             }
-            case "c": {
-                if (dir != null && !"".equals(dir)) {
-                    builder = new ProcessBuilder(dir + "/C.out");
-                } else {
-                    builder = new ProcessBuilder("C.out");
-                }
-                break;
+        } else if (LanguageEnum.C.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                builder = new ProcessBuilder(dir + "/C.out");
+            } else {
+                builder = new ProcessBuilder("C.out");
             }
-            case "c++": {
-                if (dir != null && !"".equals(dir)) {
-                    builder = new ProcessBuilder(dir + "/C++.out");
-                } else {
-                    builder = new ProcessBuilder("C++.out");
-                }
-                break;
+        } else if (LanguageEnum.CPP.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                builder = new ProcessBuilder(dir + "/C++.out");
+            } else {
+                builder = new ProcessBuilder("C++.out");
             }
-            case "python": {
-                if (dir != null && !"".equals(dir)) {
-                    builder = new ProcessBuilder("java", "-classpath", dir, "Main");
-                } else {
-                    builder = new ProcessBuilder("java", "Main");
-                }
-                break;
+        } else if (LanguageEnum.PYTHON2.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                builder = new ProcessBuilder("python", dir + "/Main.py");
+            } else {
+                builder = new ProcessBuilder("python", "Main.py");
             }
-            default: {
-                builder = null;
-                break;
+        } else if (LanguageEnum.PYTHON3.getType().equals(type)) {
+            if (dir != null && !"".equals(dir)) {
+                builder = new ProcessBuilder("python3", dir, "/Main.py3");
+            } else {
+                builder = new ProcessBuilder("python3", "Main.py3");
             }
         }
+
         //设置自动清空流
         builder.redirectErrorStream(true);
         return builder;

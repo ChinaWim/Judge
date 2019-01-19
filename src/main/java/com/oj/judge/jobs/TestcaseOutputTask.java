@@ -1,6 +1,6 @@
 package com.oj.judge.jobs;
 
-import com.oj.judge.common.StatusConst;
+import com.oj.judge.common.JudgeStatusEnum;
 import com.oj.judge.entity.TestcaseResult;
 import com.oj.judge.utils.StreamUtil;
 
@@ -38,7 +38,7 @@ public class TestcaseOutputTask implements Callable<TestcaseResult> {
         //等待进程执行结束 0代表正常退出
         int exitValue = process.waitFor();
         if (exitValue != 0 && testcaseResult.getStatus() == null) {
-            testcaseResult.setStatus(StatusConst.RUNTIME_ERROR.getStatus());
+            testcaseResult.setStatus(JudgeStatusEnum.RUNTIME_ERROR.getStatus());
         }
         return testcaseResult;
     }

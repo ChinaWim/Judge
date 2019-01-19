@@ -13,6 +13,6 @@ public interface JudgeService {
 
     List<String> compile(Integer userId, String sourceCode, String type, Integer problemId);
 
-    void execute(Integer userId, String type, Integer problemId,Integer problemResultId,String userDirPath);
+    void execute(ProblemResult problemResult,String userDirPath);
 
 }

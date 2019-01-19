@@ -5,7 +5,7 @@ package com.oj.judge.common;
  * @author m969130721@163.com
  * @date 18-11-27 下午3:58
  */
-public enum StatusConst {
+public enum JudgeStatusEnum {
 
 // 0 编译中　1 ac 2 ce 3 pe 4 re 5 tle 6 me 7 wa　8队列中 9判题中
 
@@ -32,7 +32,7 @@ public enum StatusConst {
     JUDGING(9, "JUDGING");
 
 
-    StatusConst(Integer status, String desc) {
+    JudgeStatusEnum(Integer status, String desc) {
         this.status = status;
         this.desc = desc;
     }
@@ -50,9 +50,9 @@ public enum StatusConst {
     }
 
 
-    public static StatusConst getStatusConst(Integer status) {
-        StatusConst[] statusConstArray = StatusConst.values();
-        for (StatusConst statusConst : statusConstArray) {
+    public static JudgeStatusEnum getStatusConst(Integer status) {
+        JudgeStatusEnum[] statusConstArray = JudgeStatusEnum.values();
+        for (JudgeStatusEnum statusConst : statusConstArray) {
             if (statusConst.getStatus().equals(status)) {
                 return statusConst;
             }

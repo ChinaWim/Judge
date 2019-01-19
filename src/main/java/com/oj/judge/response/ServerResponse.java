@@ -11,7 +11,7 @@ public class ServerResponse {
     private static final int FAIL_STATE = 500;
 
     /**
-     * 状态码  200 成功 500失败 .....
+     * 状态码
      */
     private int state;
 

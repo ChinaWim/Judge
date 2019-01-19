@@ -33,7 +33,7 @@ public class ProblemResult implements Serializable {
 
     private Date updateTime;
 
-    private Map<Integer, TestcaseResult> resultMap = new ConcurrentSkipListMap<>();
+    private ConcurrentSkipListMap<Integer, TestcaseResult> resultMap = new ConcurrentSkipListMap<>();
 
     public ProblemResult(Integer id, Integer userId, Integer problemId, Integer compId, Integer status, String type, Long time, Long memory, String errorMsg, String sourceCode, Date createTime, Date updateTime) {
         this.id = id;
@@ -154,7 +154,11 @@ public class ProblemResult implements Serializable {
         return resultMap;
     }
 
-    public void setResultMap(Map<Integer, TestcaseResult> resultMap) {
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public void setResultMap(ConcurrentSkipListMap<Integer, TestcaseResult> resultMap) {
         this.resultMap = resultMap;
     }
 

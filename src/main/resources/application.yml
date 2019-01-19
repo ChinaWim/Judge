@@ -32,8 +32,10 @@ mybatis:
 
 #==================== project Setting =====================#
 file:
-  dir: /home/ming/Music
-
+  server:
+    dir: /home/ming/gkuoj/file
+    testcase:
+      dir: ${file.server.dir}/testcase
 #====================rocketMQ Setting =====================#
 rocketmq:
   nameserver: 192.168.25.129:9876;192.168.25.130:9876

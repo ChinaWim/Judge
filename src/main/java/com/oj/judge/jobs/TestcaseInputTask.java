@@ -1,6 +1,6 @@
 package com.oj.judge.jobs;
 
-import com.oj.judge.common.StatusConst;
+import com.oj.judge.common.JudgeStatusEnum;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.entity.TestcaseResult;
@@ -47,9 +47,12 @@ public class TestcaseInputTask implements Runnable {
 
     @Override
     public void run() {
+        if (problemResult.getResultMap() == null) {
+            problemResult.setResultMap(new ConcurrentSkipListMap<>());
+        }
         Map<Integer, TestcaseResult> resultMap = problemResult.getResultMap();
-        String fileName = inputFile.getName();
-        Integer testCaseNum = Integer.parseInt(fileName.substring(0, fileName.lastIndexOf(".")));
+        String inputFileName = inputFile.getName();
+        Integer testCaseNum = Integer.parseInt(inputFileName.substring(0, inputFileName.lastIndexOf(".")));
 
         //输入测试样例
         OutputStream outputStream = process.getOutputStream();
@@ -68,22 +71,22 @@ public class TestcaseInputTask implements Runnable {
         try {
             //计算时间，等待题目秒数 + 500毫秒
             testcaseResult = task.get(problem.getTime() + 500, TimeUnit.MILLISECONDS);
-            if (!StatusConst.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
+            if (!JudgeStatusEnum.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
                 //答案校验
-                File outputFile = new File(outputFileDirPath + "/" + fileName);
+                File outputFile = new File(outputFileDirPath + "/" + inputFileName);
                 checkAnswer(problem, outputFile, testcaseResult);
             }
             resultMap.put(testCaseNum, testcaseResult);
         } catch (TimeoutException e) {
-            logger.error(StatusConst.TIME_LIMIT_EXCEEDED.getDesc());
+            logger.error(JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getDesc());
 
             process.destroyForcibly();
-            testcaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED.getStatus());
+            testcaseResult.setStatus(JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage());
-            testcaseResult.setStatus(StatusConst.RUNTIME_ERROR.getStatus());
+            testcaseResult.setStatus(JudgeStatusEnum.RUNTIME_ERROR.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } finally {
             //关闭子进程
@@ -95,8 +98,8 @@ public class TestcaseInputTask implements Runnable {
 
     private void checkAnswer(Problem problem, File outputFile, TestcaseResult testcaseResult) {
         try {
-            if (problem.getTime().longValue() < testcaseResult.getTime().longValue()) {
-                testcaseResult.setStatus(StatusConst.TIME_LIMIT_EXCEEDED.getStatus());
+            if (problem.getTime() < testcaseResult.getTime()) {
+                testcaseResult.setStatus(JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getStatus());
                 return;
             }
             /*if (problem.getMemory().longValue() < testcaseResult.getMemory().longValue()) {
@@ -108,18 +111,18 @@ public class TestcaseInputTask implements Runnable {
             String formatAnswerOutput = formatString(answerOutPut);
 
             if (answerOutPut.equals(userOutput)) {
-                testcaseResult.setStatus(StatusConst.ACCEPTED.getStatus());
+                testcaseResult.setStatus(JudgeStatusEnum.ACCEPTED.getStatus());
             } else {
                 if (formatOutput.equals(formatAnswerOutput)) {
-                    testcaseResult.setStatus(StatusConst.PRESENTATION_ERROR.getStatus());
+                    testcaseResult.setStatus(JudgeStatusEnum.PRESENTATION_ERROR.getStatus());
                 } else {
-                    testcaseResult.setStatus(StatusConst.WRONG_ANSWER.getStatus());
+                    testcaseResult.setStatus(JudgeStatusEnum.WRONG_ANSWER.getStatus());
                 }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            testcaseResult.setStatus(StatusConst.RUNTIME_ERROR.getStatus());
+            testcaseResult.setStatus(JudgeStatusEnum.RUNTIME_ERROR.getStatus());
             logger.error(e.getMessage());
         }
     }

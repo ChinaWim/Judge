@@ -1,7 +1,8 @@
 package com.oj.judge.service.impl;
 
 import com.oj.judge.common.CmdConst;
-import com.oj.judge.common.StatusConst;
+import com.oj.judge.common.JudgeStatusEnum;
+import com.oj.judge.common.LanguageEnum;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.entity.TestcaseResult;
@@ -30,8 +31,9 @@ import java.util.concurrent.*;
 public class JudgeServiceImpl implements JudgeService {
     private static Logger logger = LoggerFactory.getLogger(JudgeServiceImpl.class);
 
-    @Value("${file.dir}")
-    private String fileDirPath;
+    @Value("${file.server.testcase.dir}")
+    private String fileServerTestcaseDir;
+
 
     private static Runtime runtime = Runtime.getRuntime();
 
@@ -50,10 +52,10 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Override
     public List<String> compile(Integer userId, String sourceCode, String type, Integer problemId) {
-        String problemDirPath = fileDirPath + "/" + problemId;
+        String problemDirPath = fileServerTestcaseDir + "/" + problemId;
         String userDirPath = problemDirPath + "/" + UUIDUtil.getUUIDByTime();
-
-        FileUtil.saveFile(sourceCode, userDirPath + "/Main." + type);
+        String ext = LanguageEnum.getExtByType(type);
+        FileUtil.saveFile(sourceCode, userDirPath + "/Main." + ext);
 
         List<String> result = new ArrayList<>();
         String compileErrorOutput = null;
@@ -63,11 +65,11 @@ public class JudgeServiceImpl implements JudgeService {
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            result.add(StatusConst.RUNTIME_ERROR.getDesc());
+            result.add(JudgeStatusEnum.RUNTIME_ERROR.getDesc());
             return result;
         }
         if (compileErrorOutput == null || "".equals(compileErrorOutput)) {
-            result.add(StatusConst.COMPILE_SUCCESS.getDesc());
+            result.add(JudgeStatusEnum.COMPILE_SUCCESS.getDesc());
             result.add(userDirPath);
         } else {
             result.add(compileErrorOutput);
@@ -78,18 +80,18 @@ public class JudgeServiceImpl implements JudgeService {
     }
 
     @Override
-    public void execute(Integer userId, String type, Integer problemId, Integer problemResultId, String userDirPath) {
+    public void execute(ProblemResult problemResult, String userDirPath) {
         //update 判题中
-        problemService.updateProblemResultStatus(problemResultId, StatusConst.JUDGING.getStatus());
+        problemService.updateProblemResultStatus(problemResult.getId(), JudgeStatusEnum.JUDGING.getStatus());
 
-        String problemDirPath = fileDirPath + "/" + problemId;
+        String problemDirPath = fileServerTestcaseDir + "/" + problemResult.getProblemId();
         String inputFileDirPath = problemDirPath + "/input";
         String outputFileDirPath = problemDirPath + "/output";
-        //
-        Problem problem = problemService.getProblemById(problemId);
-        //题目输出结果
-        ProblemResult problemResult = new ProblemResult();
-        problemResult.setId(problemResultId);
+
+        Problem problem = problemService.getProblemById(problemResult.getProblemId());
+        //创建一个新的 题目输出结果实例 去接收testcase结果
+//        ProblemResult problemResult = new ProblemResult();
+//        problemResult.setId(problemResultId);
 
         //执行输入和输出
         File inputFileDir = new File(inputFileDirPath);
@@ -98,7 +100,7 @@ public class JudgeServiceImpl implements JudgeService {
         ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
         try {
             for (File inputFile : inputFiles) {
-                ProcessBuilder builder = CmdConst.executeCmd(type, userDirPath);
+                ProcessBuilder builder = CmdConst.executeCmd(problemResult.getType(), userDirPath);
                 Process process = builder.start();
                 TestcaseInputTask testcaseInputTask = new TestcaseInputTask(problem, inputFile,
                         outputFileDirPath, process, problemResult, countDownLatch);
@@ -106,7 +108,7 @@ public class JudgeServiceImpl implements JudgeService {
             }
             executorService.shutdown();
             countDownLatch.await();
-            //统计汇总
+            //汇总统计
             long maxTime = -1;
             long maxMemory = -1;
             Integer status = null;
@@ -123,31 +125,31 @@ public class JudgeServiceImpl implements JudgeService {
                 if (testcaseResult.getTime() != null && testcaseResult.getTime() > maxTime) {
                     maxTime = testcaseResult.getTime();
                 }
-                if (StatusConst.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
-                    status = StatusConst.RUNTIME_ERROR.getStatus();
+                if (JudgeStatusEnum.RUNTIME_ERROR.getStatus().equals(testcaseResult.getStatus())) {
+                    status = JudgeStatusEnum.RUNTIME_ERROR.getStatus();
                 }
-                if (status == null && StatusConst.PRESENTATION_ERROR.getStatus().equals(testcaseResult.getStatus())) {
-                    status = StatusConst.PRESENTATION_ERROR.getStatus();
+                if (status == null && JudgeStatusEnum.PRESENTATION_ERROR.getStatus().equals(testcaseResult.getStatus())) {
+                    status = JudgeStatusEnum.PRESENTATION_ERROR.getStatus();
                 }
-                if (status == null && StatusConst.WRONG_ANSWER.getStatus().equals(testcaseResult.getStatus())) {
-                    status = StatusConst.WRONG_ANSWER.getStatus();
+                if (status == null && JudgeStatusEnum.WRONG_ANSWER.getStatus().equals(testcaseResult.getStatus())) {
+                    status = JudgeStatusEnum.WRONG_ANSWER.getStatus();
                 }
-                if (status == null && StatusConst.TIME_LIMIT_EXCEEDED.getStatus().equals(testcaseResult.getStatus())) {
-                    status = StatusConst.TIME_LIMIT_EXCEEDED.getStatus();
+                if (status == null && JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getStatus().equals(testcaseResult.getStatus())) {
+                    status = JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getStatus();
                 }
-                if (status == null && StatusConst.MEMORY_LIMIT_EXCEEDED.getStatus().equals(testcaseResult.getStatus())) {
-                    status = StatusConst.MEMORY_LIMIT_EXCEEDED.getStatus();
+                if (status == null && JudgeStatusEnum.MEMORY_LIMIT_EXCEEDED.getStatus().equals(testcaseResult.getStatus())) {
+                    status = JudgeStatusEnum.MEMORY_LIMIT_EXCEEDED.getStatus();
                 }
-                if (StatusConst.ACCEPTED.getStatus().equals(testcaseResult.getStatus())) {
+                if (JudgeStatusEnum.ACCEPTED.getStatus().equals(testcaseResult.getStatus())) {
                     acCount++;
                 }
                 testcaseResultList.add(testcaseResult);
             }
 
             if (acCount == testcaseResultList.size()) {
-                status = StatusConst.ACCEPTED.getStatus();
+                status = JudgeStatusEnum.ACCEPTED.getStatus();
                 //user solutionCount
-                userService.addSolutionCount(userId, problemId);
+                userService.addSolutionCount(problemResult.getUserId(),problemResult.getProblemId());
             }
 
             //insertBatch testcase
@@ -159,18 +161,18 @@ public class JudgeServiceImpl implements JudgeService {
             problemService.updateProblemResult(problemResult);
 
             //add count
-            problemService.addProblemCount(problemId, StatusConst.getStatusConst(status));
-            userService.addCount(userId, StatusConst.getStatusConst(status));
+            problemService.addProblemCount(problemResult.getProblemId(), JudgeStatusEnum.getStatusConst(status));
+            userService.addCount(problemResult.getUserId(), JudgeStatusEnum.getStatusConst(status));
 
 
         } catch (Exception e) {
-            e.printStackTrace();
             //执行脚本错误或闭锁中断Exception update database
-            problemService.updateProblemResultStatus(problemResultId, StatusConst.RUNTIME_ERROR.getStatus());
-            //todo
+            problemService.updateProblemResultStatus(problemResult.getId(), JudgeStatusEnum.RUNTIME_ERROR.getStatus());
             logger.error(e.getMessage());
+        } finally {
+            FileUtil.deleteFile(userDirPath);
         }
-        FileUtil.deleteFile(userDirPath);
+
     }
 
 

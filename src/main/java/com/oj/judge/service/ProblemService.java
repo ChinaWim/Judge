@@ -1,7 +1,7 @@
 package com.oj.judge.service;
 
 import com.oj.judge.response.ServerResponse;
-import com.oj.judge.common.StatusConst;
+import com.oj.judge.common.JudgeStatusEnum;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.entity.TestcaseResult;
@@ -26,7 +26,7 @@ public interface ProblemService {
 
     ServerResponse updateProblemResult(ProblemResult problemResultId);
 
-    ServerResponse addProblemCount(Integer problemId, StatusConst statusConst);
+    ServerResponse addProblemCount(Integer problemId, JudgeStatusEnum statusConst);
 
     ServerResponse insertBatchTestcaseResult(List<TestcaseResult> testcaseResultList);
 

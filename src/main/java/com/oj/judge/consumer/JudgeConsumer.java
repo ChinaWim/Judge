@@ -1,9 +1,7 @@
 package com.oj.judge.consumer;
 
-import com.oj.judge.common.StatusConst;
-import com.oj.judge.entity.Problem;
+import com.oj.judge.common.JudgeStatusEnum;
 import com.oj.judge.entity.ProblemResult;
-import com.oj.judge.request.Code;
 import com.oj.judge.service.JudgeService;
 import com.oj.judge.service.ProblemService;
 import com.oj.judge.service.UserService;
@@ -20,18 +18,12 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.concurrent.*;
 
 /**
  * @author m969130721@163.com
@@ -57,6 +49,7 @@ public class JudgeConsumer {
     @PostConstruct
     private void initMQConsumer() throws MQClientException {
         pushConsumer = new DefaultMQPushConsumer(environment.getProperty("rocketmq.consumer.group"));
+        pushConsumer.setNamesrvAddr(environment.getProperty("rocketmq.nameserver"));
         pushConsumer.setConsumeThreadMax(Integer.parseInt(environment.getProperty("rocketmq.consumer.max-thread")));
         pushConsumer.setConsumeThreadMin(Integer.parseInt(environment.getProperty("rocketmq.consumer.min-thread")));
         pushConsumer.setMessageModel(MessageModel.CLUSTERING);
@@ -68,6 +61,7 @@ public class JudgeConsumer {
     private void shutdownMQConsumer() {
         if (pushConsumer != null) {
             pushConsumer.shutdown();
+            logger.info("{},判题机关闭了",Thread.currentThread().getName());
         }
     }
 
@@ -79,36 +73,39 @@ public class JudgeConsumer {
                 for (MessageExt messageExt : list) {
                     try {
                         String body = new String(messageExt.getBody(), RemotingHelper.DEFAULT_CHARSET);
-                        Code code = JsonUtil.string2Obj(body, Code.class);
+                        logger.info("{},消费body为{}:",Thread.currentThread().getName(),body);
+                        ProblemResult problemResult = JsonUtil.string2Obj(body, ProblemResult.class);
+
                         //处理重复消费问题
-                        ProblemResult problemResult = problemService.getProblemResult(code.getProblemResultId());
-                        if (!StatusConst.QUEUING.getStatus().equals(problemResult.getStatus())) {
+                        problemResult = problemService.getProblemResult(problemResult.getId());
+                        if (!JudgeStatusEnum.QUEUING.getStatus().equals(problemResult.getStatus())) {
                             continue;
                         }
                         //update compiling
-                        problemResult.setStatus(StatusConst.COMPILING.getStatus());
+                        problemResult.setStatus(JudgeStatusEnum.COMPILING.getStatus());
                         problemService.updateProblemResult(problemResult);
 
-                        int problemResultId = problemResult.getId();
                         //执行编译
-                        List<String> resultList = judgeService.compile(code.getUserId(), code.getSourceCode(),
-                                code.getType(), code.getProblemId());
+                        List<String> resultList = judgeService.compile(problemResult.getUserId(), problemResult.getSourceCode(),
+                                problemResult.getType(), problemResult.getProblemId());
                         String compileResult = resultList.get(0);
                         String userDirPath = resultList.get(1);
 
-                        if (StatusConst.COMPILE_SUCCESS.getDesc().equals(compileResult)) {
+                        if (JudgeStatusEnum.COMPILE_SUCCESS.getDesc().equals(compileResult)) {
                             //运行
-                            judgeService.execute(code.getUserId(), code.getType(),
-                                    code.getProblemId(), problemResultId, userDirPath);
+                            judgeService.execute(problemResult, userDirPath);
                         } else {
                             //update compile error
-                            problemService.updateProblemResultStatus(problemResultId, StatusConst.COMPILE_ERROR.getStatus());
+                            problemResult.setStatus(JudgeStatusEnum.COMPILE_ERROR.getStatus());
+                            problemResult.setErrorMsg(compileResult);
+                            problemService.updateProblemResult(problemResult);
                             //add count
-                            problemService.addProblemCount(code.getProblemId(), StatusConst.COMPILE_ERROR);
-                            userService.addCount(code.getUserId(), StatusConst.COMPILE_ERROR);
+                            problemService.addProblemCount(problemResult.getProblemId(), JudgeStatusEnum.COMPILE_ERROR);
+                            userService.addCount(problemResult.getUserId(), JudgeStatusEnum.COMPILE_ERROR);
                         }
                     } catch (Exception e) {
-                        logger.error("异常,{}", e.getMessage());
+                        e.printStackTrace();
+                        logger.error("RocketMQ消费异常,{}", e.getMessage());
                         return ConsumeConcurrentlyStatus.RECONSUME_LATER;
                     }
                 }

@@ -19,7 +19,7 @@ public class JudgeRunner implements ApplicationRunner {
     private JudgeConsumer judgeConsumer;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args){
         judgeConsumer.judge();
     }
 }
