@@ -42,5 +42,5 @@ rocketmq:
   topic: ojcode
   consumer:
     group: judgeConsumerGroup
-    max-thread: 128
-    min-thread: 32
+    max-thread: 20
+    min-thread: 10

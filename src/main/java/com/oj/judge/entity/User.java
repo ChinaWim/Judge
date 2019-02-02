@@ -4,7 +4,7 @@ package com.oj.judge.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     private static final long serialVersionUID = -3145390293109713500L;
 
@@ -52,13 +52,15 @@ public class User implements Serializable{
 
     private Integer goldCount;
 
+    private Integer rating;
+
     private Date lastLoginTime;
 
     private Date createTime;
 
     private Date updateTime;
 
-    public User(Integer id, String username, String password, String name, String mood, String avatar, Integer flag, String sex, String email, String phone, String school, Integer signCount, Integer submitCount, Integer solutionCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer ceCount, Integer reCount, Integer waCount, Integer goldCount, Date lastLoginTime, Date createTime, Date updateTime) {
+    public User(Integer id, String username, String password, String name, String mood, String avatar, Integer flag, String sex, String email, String phone, String school, Integer signCount, Integer submitCount, Integer solutionCount, Integer acCount, Integer tleCount, Integer peCount, Integer meCount, Integer ceCount, Integer reCount, Integer waCount, Integer goldCount, Integer rating, Date lastLoginTime, Date createTime, Date updateTime) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -81,6 +83,7 @@ public class User implements Serializable{
         this.reCount = reCount;
         this.waCount = waCount;
         this.goldCount = goldCount;
+        this.rating = rating;
         this.lastLoginTime = lastLoginTime;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -259,6 +262,22 @@ public class User implements Serializable{
         this.goldCount = goldCount;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
     public Date getLastLoginTime() {
         return lastLoginTime;
     }
@@ -282,6 +301,7 @@ public class User implements Serializable{
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
 
     @Override
     public String toString() {
@@ -308,6 +328,7 @@ public class User implements Serializable{
                 ", reCount=" + reCount +
                 ", waCount=" + waCount +
                 ", goldCount=" + goldCount +
+                ", rating=" + rating +
                 ", lastLoginTime=" + lastLoginTime +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

@@ -25,6 +25,7 @@
             <arg column="re_count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="wa_count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="gold_count" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+            <arg column="rating" jdbcType="INTEGER" javaType="java.lang.Integer"/>
             <arg column="last_login_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
             <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
@@ -35,7 +36,7 @@
     <sql id="Base_Column_List">
     id, username, password, name, mood, avatar, flag, sex, email, phone, school, sign_count, 
     submit_count, solution_count, ac_count, tle_count, pe_count, me_count, ce_count, 
-    re_count, wa_count, gold_count, last_login_time, create_time, update_time
+    re_count, wa_count, gold_count, rating, last_login_time, create_time, update_time
   </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -54,7 +55,7 @@
       school, sign_count, submit_count, 
       solution_count, ac_count, tle_count, 
       pe_count, me_count, ce_count, 
-      re_count, wa_count, gold_count, 
+      re_count, wa_count, gold_count, rating,
       last_login_time, create_time
       )
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
@@ -63,7 +64,7 @@
       #{school,jdbcType=VARCHAR}, #{signCount,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, 
       #{solutionCount,jdbcType=INTEGER}, #{acCount,jdbcType=INTEGER}, #{tleCount,jdbcType=INTEGER}, 
       #{peCount,jdbcType=INTEGER}, #{meCount,jdbcType=INTEGER}, #{ceCount,jdbcType=INTEGER}, 
-      #{reCount,jdbcType=INTEGER}, #{waCount,jdbcType=INTEGER}, #{goldCount,jdbcType=INTEGER}, 
+      #{reCount,jdbcType=INTEGER}, #{waCount,jdbcType=INTEGER}, #{goldCount,jdbcType=INTEGER}, #{rating,jdbcType=INTEGER},
       #{lastLoginTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -135,6 +136,9 @@
             </if>
             <if test="goldCount != null">
                 gold_count,
+            </if>
+            <if test="rating != null">
+                rating,
             </if>
             <if test="lastLoginTime != null">
                 last_login_time,
@@ -210,6 +214,9 @@
             <if test="goldCount != null">
                 #{goldCount,jdbcType=INTEGER},
             </if>
+            <if test="rating != null">
+                #{rating,jdbcType=INTEGER},
+            </if>
             <if test="lastLoginTime != null">
                 #{lastLoginTime,jdbcType=TIMESTAMP},
             </if>
@@ -284,6 +291,9 @@
             <if test="goldCount != null">
                 gold_count = #{goldCount,jdbcType=INTEGER},
             </if>
+            <if test="rating != null">
+                rating = #{rating,jdbcType=INTEGER},
+            </if>
             <if test="lastLoginTime != null">
                 last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
             </if>
@@ -316,6 +326,7 @@
       re_count = #{reCount,jdbcType=INTEGER},
       wa_count = #{waCount,jdbcType=INTEGER},
       gold_count = #{goldCount,jdbcType=INTEGER},
+      rating = #{rating,jdbcType=INTEGER},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
