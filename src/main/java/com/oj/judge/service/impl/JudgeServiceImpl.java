@@ -89,6 +89,9 @@ public class JudgeServiceImpl implements JudgeService {
         String outputFileDirPath = problemDirPath + "/output";
 
         Problem problem = problemService.getProblemById(problemResult.getProblemId());
+        //AC题目增加的点数
+        Integer ratingCount = problem.getLevel() * 10;
+        Integer goldCount = problem.getLevel();
         //创建一个新的 题目输出结果实例 去接收testcase结果
 //        ProblemResult problemResult = new ProblemResult();
 //        problemResult.setId(problemResultId);
@@ -149,7 +152,8 @@ public class JudgeServiceImpl implements JudgeService {
             if (acCount == testcaseResultList.size()) {
                 status = JudgeStatusEnum.ACCEPTED.getStatus();
                 //user solutionCount
-                userService.addSolutionCount(problemResult.getUserId(),problemResult.getProblemId());
+                userService.addSolutionCountAndGoldCountAndRating(problemResult.getUserId(),
+                        problemResult.getProblemId(), goldCount, ratingCount);
             }
 
             //insertBatch testcase

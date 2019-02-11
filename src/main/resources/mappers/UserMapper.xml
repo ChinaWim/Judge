@@ -333,8 +333,10 @@
   </update>
 
 
-    <update id="addSolutionCount" parameterType="map">
-   update user set solution_count = solution_count + 1
+    <update id="addSolutionCountAndGoldCountAndRating" parameterType="map">
+   update user
+   set solution_count = solution_count + 1 ,
+   rating = rating + #{ratingCount}, gold_count = #{goldCount}
     where id = #{userId}
     and id not in
     (select user_id from problem_result

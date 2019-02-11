@@ -11,6 +11,6 @@ public interface UserService {
 
     ServerResponse addCount(Integer userId, JudgeStatusEnum statusConst);
 
-    ServerResponse addSolutionCount(Integer userId,Integer problemId);
+    ServerResponse addSolutionCountAndGoldCountAndRating(Integer userId,Integer problemId,Integer goldCount,Integer ratingCount);
 
 }

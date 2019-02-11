@@ -20,7 +20,6 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
 
-
     @Override
     public ServerResponse addCount(Integer userId, JudgeStatusEnum statusConst) {
         int effect = 0;
@@ -48,9 +47,10 @@ public class UserServiceImpl implements UserService {
         return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
 
     }
+
     @Override
-    public ServerResponse addSolutionCount(Integer userId,Integer problemId) {
-        int effect = userMapper.addSolutionCount(userId,problemId);
+    public ServerResponse addSolutionCountAndGoldCountAndRating(Integer userId, Integer problemId, Integer goldCount, Integer ratingCount) {
+        int effect = userMapper.addSolutionCountAndGoldCountAndRating(userId, problemId, goldCount, ratingCount);
         return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 }
