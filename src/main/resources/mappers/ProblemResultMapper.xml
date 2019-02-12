@@ -7,6 +7,7 @@
       <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="problem_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="comp_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="run_num" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="type" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="time" jdbcType="BIGINT" javaType="java.lang.Long" />
@@ -18,11 +19,11 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_id, problem_id, comp_id, status, type, time, memory, error_msg, source_code, 
-    create_time, update_time
+    id, user_id, problem_id, comp_id, run_num, status, type, time, memory, error_msg,
+    source_code, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from problem_result
     where id = #{id,jdbcType=INTEGER}
@@ -32,15 +33,14 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyProperty="id" parameterType="com.oj.judge.entity.ProblemResult" >
-    insert into problem_result (id, user_id, problem_id, 
-      comp_id, status, type, 
-      time, memory, error_msg, 
-      source_code, create_time
-      )
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{problemId,jdbcType=INTEGER}, 
-      #{compId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
-      #{time,jdbcType=BIGINT}, #{memory,jdbcType=BIGINT}, #{errorMsg,jdbcType=VARCHAR}, 
-      #{sourceCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+    insert into problem_result (id, user_id, problem_id,
+      comp_id, run_num, status,
+      type, time, memory, error_msg,
+      source_code, create_time)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{problemId,jdbcType=INTEGER},
+      #{compId,jdbcType=INTEGER}, #{runNum,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+      #{type,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT}, #{memory,jdbcType=BIGINT}, #{errorMsg,jdbcType=VARCHAR},
+      #{sourceCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}}
       )
   </insert>
   <insert id="insertSelective" keyProperty="id" parameterType="com.oj.judge.entity.ProblemResult" >
@@ -57,6 +57,9 @@
       </if>
       <if test="compId != null" >
         comp_id,
+      </if>
+      <if test="runNum != null" >
+        run_num,
       </if>
       <if test="status != null" >
         status,
@@ -93,6 +96,9 @@
       <if test="compId != null" >
         #{compId,jdbcType=INTEGER},
       </if>
+      <if test="runNum != null" >
+        #{runNum,jdbcType=VARCHAR},
+      </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
       </if>
@@ -128,6 +134,9 @@
       <if test="compId != null" >
         comp_id = #{compId,jdbcType=INTEGER},
       </if>
+      <if test="runNum != null" >
+        run_num = #{runNum,jdbcType=VARCHAR},
+      </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
       </if>
@@ -152,11 +161,13 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+
   <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.ProblemResult" >
     update problem_result
     set user_id = #{userId,jdbcType=INTEGER},
       problem_id = #{problemId,jdbcType=INTEGER},
       comp_id = #{compId,jdbcType=INTEGER},
+      run_num = #{runNum,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       type = #{type,jdbcType=VARCHAR},
       time = #{time,jdbcType=BIGINT},
@@ -167,7 +178,6 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-
   <select id="listByUserIdProblemId" resultType="com.oj.judge.entity.ProblemResult" parameterType="map">
     select <include refid="Base_Column_List"/> from problem_result
     where user_id = #{userId} and problemId = #{problemId}
@@ -175,8 +185,13 @@
 
 
   <select id="countByUserIdProblemIdStatus" resultType="java.lang.Integer" parameterType="map">
-  select count(*) from problem_result
+  select count(id) from problem_result
   where user_id = #{userId} and problemId = #{problemId} and status #{status}
+  </select>
+
+  <select id="getProblemResultByRunNum" resultType="com.oj.judge.entity.ProblemResult" parameterType="string">
+    select <include refid="Base_Column_List"/> from problem_result
+    where run_num = #{runNum}
   </select>
 
 

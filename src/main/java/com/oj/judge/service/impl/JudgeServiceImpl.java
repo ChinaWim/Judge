@@ -82,7 +82,7 @@ public class JudgeServiceImpl implements JudgeService {
     @Override
     public void execute(ProblemResult problemResult, String userDirPath) {
         //update 判题中
-        problemService.updateProblemResultStatus(problemResult.getId(), JudgeStatusEnum.JUDGING.getStatus());
+        problemService.updateProblemResultStatusById(problemResult.getId(), JudgeStatusEnum.JUDGING.getStatus());
 
         String problemDirPath = fileServerTestcaseDir + "/" + problemResult.getProblemId();
         String inputFileDirPath = problemDirPath + "/input";
@@ -162,17 +162,17 @@ public class JudgeServiceImpl implements JudgeService {
             problemResult.setMemory(maxMemory);
             problemResult.setTime(maxTime);
             problemResult.setStatus(status);
-            problemService.updateProblemResult(problemResult);
+            problemService.updateProblemResultById(problemResult);
 
             //add count
-            problemService.addProblemCount(problemResult.getProblemId(), JudgeStatusEnum.getStatusConst(status));
+            problemService.addProblemCountById(problemResult.getProblemId(), JudgeStatusEnum.getStatusConst(status));
             userService.addCount(problemResult.getUserId(), JudgeStatusEnum.getStatusConst(status));
 
 
         } catch (Exception e) {
             //执行脚本错误或闭锁中断Exception update database
-            problemService.updateProblemResultStatus(problemResult.getId(), JudgeStatusEnum.RUNTIME_ERROR.getStatus());
-            logger.error(e.getMessage());
+            problemService.updateProblemResultStatusById(problemResult.getId(), JudgeStatusEnum.RUNTIME_ERROR.getStatus());
+            logger.error("执行脚本错误或闭锁中断Exception",e);
         } finally {
             FileUtil.deleteFile(userDirPath);
         }

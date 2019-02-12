@@ -16,17 +16,19 @@ public interface ProblemService {
 
     Problem getProblemById(Integer problemId);
 
-    ProblemResult getProblemResult(Integer problemResultId);
+    ProblemResult getProblemResultById(Integer problemResultId);
+
+    ProblemResult getProblemResultByRunNum(String runNum);
 
     ServerResponse insertProblemResult(ProblemResult result);
 
-    ServerResponse updateProblem(Problem problem);
+    ServerResponse updateProblemById(Problem problem);
 
-    ServerResponse updateProblemResultStatus(Integer problemResultId, Integer status);
+    ServerResponse updateProblemResultStatusById(Integer problemResultId, Integer status);
 
-    ServerResponse updateProblemResult(ProblemResult problemResultId);
+    ServerResponse updateProblemResultById(ProblemResult problemResult);
 
-    ServerResponse addProblemCount(Integer problemId, JudgeStatusEnum statusConst);
+    ServerResponse addProblemCountById(Integer problemId, JudgeStatusEnum statusConst);
 
     ServerResponse insertBatchTestcaseResult(List<TestcaseResult> testcaseResultList);
 

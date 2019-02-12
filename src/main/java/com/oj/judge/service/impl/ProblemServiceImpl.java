@@ -38,8 +38,13 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public ProblemResult getProblemResult(Integer problemResultId) {
+    public ProblemResult getProblemResultById(Integer problemResultId) {
         return problemResultMapper.selectByPrimaryKey(problemResultId);
+    }
+
+    @Override
+    public ProblemResult getProblemResultByRunNum(String runNum) {
+        return problemResultMapper.getProblemResultByRunNum(runNum);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResponse updateProblem(Problem problem) {
+    public ServerResponse updateProblemById(Problem problem) {
         int effect = problemMapper.updateByPrimaryKeySelective(problem);
         return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
@@ -67,8 +72,8 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResponse updateProblemResult(ProblemResult problemResultId) {
-        int effect = problemResultMapper.updateByPrimaryKeySelective(problemResultId);
+    public ServerResponse updateProblemResultById(ProblemResult problemResult) {
+        int effect = problemResultMapper.updateByPrimaryKeySelective(problemResult);
         return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
 
@@ -79,7 +84,7 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResponse updateProblemResultStatus(Integer problemResultId, Integer status) {
+    public ServerResponse updateProblemResultStatusById(Integer problemResultId, Integer status) {
         int effect = problemResultMapper.updateProblemResultStatus(problemResultId, status);
         return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
     }
@@ -92,7 +97,7 @@ public class ProblemServiceImpl implements ProblemService {
      * @return
      */
     @Override
-    public ServerResponse addProblemCount(Integer problemId, JudgeStatusEnum statusConst) {
+    public ServerResponse addProblemCountById(Integer problemId, JudgeStatusEnum statusConst) {
         int effect = 0;
         if (Objects.equals(JudgeStatusEnum.ACCEPTED, statusConst)) {
             effect = problemMapper.addAcCount(problemId);

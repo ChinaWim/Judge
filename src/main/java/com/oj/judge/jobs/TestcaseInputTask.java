@@ -5,6 +5,8 @@ import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.entity.TestcaseResult;
 import com.oj.judge.utils.StreamUtil;
+import com.oj.judge.utils.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,8 +86,8 @@ public class TestcaseInputTask implements Runnable {
             testcaseResult.setStatus(JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } catch (Exception e) {
-
             logger.error(e.getMessage());
+
             testcaseResult.setStatus(JudgeStatusEnum.RUNTIME_ERROR.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } finally {
@@ -96,6 +98,13 @@ public class TestcaseInputTask implements Runnable {
         }
     }
 
+
+    /**
+     *  tip: windows下文本以\r\n结尾，linux以\n结尾,mac \r 结尾
+     * @param problem
+     * @param outputFile
+     * @param testcaseResult
+     */
     private void checkAnswer(Problem problem, File outputFile, TestcaseResult testcaseResult) {
         try {
             if (problem.getTime() < testcaseResult.getTime()) {
@@ -107,13 +116,17 @@ public class TestcaseInputTask implements Runnable {
             }*/
             String answerOutPut = StreamUtil.getOutPut(new FileInputStream(outputFile));
             String userOutput = testcaseResult.getUserOutput();
-            String formatOutput = formatString(userOutput);
+
+            answerOutPut = StringUtil.rTrim(answerOutPut);
+            userOutput = StringUtil.rTrim(userOutput);
+
             String formatAnswerOutput = formatString(answerOutPut);
+            String formatUserOutput = formatString(userOutput);
 
             if (answerOutPut.equals(userOutput)) {
                 testcaseResult.setStatus(JudgeStatusEnum.ACCEPTED.getStatus());
             } else {
-                if (formatOutput.equals(formatAnswerOutput)) {
+                if (formatUserOutput.equals(formatAnswerOutput)) {
                     testcaseResult.setStatus(JudgeStatusEnum.PRESENTATION_ERROR.getStatus());
                 } else {
                     testcaseResult.setStatus(JudgeStatusEnum.WRONG_ANSWER.getStatus());
@@ -130,24 +143,13 @@ public class TestcaseInputTask implements Runnable {
 
     private static String formatString(String string) {
         string = string.replace(" ", "");
-        string = string.replace("   ", "");
         string = string.replace("\n", "");
         string = string.replace("\r", "");
         string = string.replace("\t", "");
         return string;
     }
 
-
-    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-        String outPut = StreamUtil.getOutPut(new FileInputStream("/home/ming/Music/1000/output/testdata.out"));
-        String testByte = "我";
-        System.out.println(testByte.getBytes("ISO-8859-1").length);
-        char[] chars = testByte.toCharArray();
-        for (char aChar : chars) {
-            System.out.println("第i个:" + aChar);
-        }
-
-
+    public static void main(String[] args) {
+        System.out.println(formatString(" 123"));
     }
-
 }

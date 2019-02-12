@@ -67,7 +67,7 @@ public class TestcaseResult implements Serializable {
     }
 
     public void setUserOutput(String userOutput) {
-        this.userOutput = userOutput == null ? null : userOutput.trim();
+        this.userOutput = userOutput;
     }
 
     public Long getTime() {

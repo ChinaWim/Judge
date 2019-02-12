@@ -49,7 +49,7 @@ public class JudgeDao {
 //        System.out.println(getPid(process));
 //        Thread.sleep(15000);
         Thread thread1 = new Thread(() -> {
-          StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1004/input/1.txt");
+          StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1000/input/1.txt");
             System.out.println("阻塞开始:");
             System.out.println(StreamUtil.getOutPut(process.getInputStream()));
             System.out.println("阻塞结束啦");

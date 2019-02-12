@@ -61,7 +61,7 @@ public class JudgeConsumer {
     private void shutdownMQConsumer() {
         if (pushConsumer != null) {
             pushConsumer.shutdown();
-            logger.info("{},判题机关闭了",Thread.currentThread().getName());
+            logger.info("{},判题机关闭了", Thread.currentThread().getName());
         }
     }
 
@@ -73,17 +73,26 @@ public class JudgeConsumer {
                 for (MessageExt messageExt : list) {
                     try {
                         String body = new String(messageExt.getBody(), RemotingHelper.DEFAULT_CHARSET);
-                        logger.info("{},消费body为{}:",Thread.currentThread().getName(),body);
+                        logger.info("{},消费body为{}:", Thread.currentThread().getName(), body);
                         ProblemResult problemResult = JsonUtil.string2Obj(body, ProblemResult.class);
 
                         //处理重复消费问题
-                        problemResult = problemService.getProblemResult(problemResult.getId());
-                        if (!JudgeStatusEnum.QUEUING.getStatus().equals(problemResult.getStatus())) {
-                            continue;
+                        ProblemResult problemResultFormDB = problemService.getProblemResultByRunNum(problemResult.getRunNum());
+                        if (problemResultFormDB != null) {
+                            if (problemResultFormDB.getStatus().equals(JudgeStatusEnum.QUEUING)
+                                    || problemResultFormDB.getStatus().equals(JudgeStatusEnum.COMPILING)
+                                    || problemResultFormDB.getStatus().equals(JudgeStatusEnum.JUDGING)) {
+                                //update compiling
+                                problemResult = problemResultFormDB;
+                                problemResult.setStatus(JudgeStatusEnum.COMPILING.getStatus());
+                                problemService.updateProblemResultById(problemResult);
+                            } else {
+                                continue;
+                            }
+                        } else {
+                            problemResult.setStatus(JudgeStatusEnum.COMPILING.getStatus());
+                            problemService.insertProblemResult(problemResult);
                         }
-                        //update compiling
-                        problemResult.setStatus(JudgeStatusEnum.COMPILING.getStatus());
-                        problemService.updateProblemResult(problemResult);
 
                         //执行编译
                         List<String> resultList = judgeService.compile(problemResult.getUserId(), problemResult.getSourceCode(),
@@ -98,9 +107,9 @@ public class JudgeConsumer {
                             //update compile error
                             problemResult.setStatus(JudgeStatusEnum.COMPILE_ERROR.getStatus());
                             problemResult.setErrorMsg(compileResult);
-                            problemService.updateProblemResult(problemResult);
+                            problemService.updateProblemResultById(problemResult);
                             //add count
-                            problemService.addProblemCount(problemResult.getProblemId(), JudgeStatusEnum.COMPILE_ERROR);
+                            problemService.addProblemCountById(problemResult.getProblemId(), JudgeStatusEnum.COMPILE_ERROR);
                             userService.addCount(problemResult.getUserId(), JudgeStatusEnum.COMPILE_ERROR);
                         }
                     } catch (Exception e) {
