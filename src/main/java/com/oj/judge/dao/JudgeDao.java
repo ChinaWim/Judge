@@ -2,9 +2,14 @@ package com.oj.judge.dao;
 
 
 import com.oj.judge.utils.StreamUtil;
+import com.oj.judge.utils.StringUtil;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 24140(3) 25572(3) 27252(3) 27640 //误差大概在5mb之内
@@ -17,49 +22,58 @@ import java.lang.reflect.Field;
  * @date 18-11-27 下午3:05
  */
 public class JudgeDao {
+    //22060 20952 21572 21252 21724 21192 21480 22404 21932 20544
+    // + 1024
+    //21252 20228 21276 21496 21832 21764
     public static void main(String[] args) throws IOException, InterruptedException, NoSuchFieldException, IllegalAccessException {
         Runtime runtime = Runtime.getRuntime();
+        int total = (int)Runtime.getRuntime().totalMemory()/1024;
+        int free = (int)Runtime.getRuntime().freeMemory()/1024;
+        System.out.println(total - free);
         Process process = runtime.exec("java -classpath /home/ming/Desktop/ Main");
-
-       /*Thread thread = new Thread(() -> {
+        System.out.println(process.info().user().get());
+        String cmd = "cat   /proc/" + process.pid() + "/status | grep VmRSS | tr -cd '[0-9]' ";
+       Thread thread = new Thread(() -> {
             Long max = 0L;
-            while (process.isAlive()) {
-                try {
-                    String cmd = "cat   /proc/" + getPid(process) + "/status | grep VmRSS";
-                    Process ps = runtime.exec(new String[]{"/bin/sh", "-c", cmd});
-                    String memory = StreamUtil.getOutPut(ps.getInputStream());
-                    Pattern pattern = Pattern.compile("[0-9]* kB");
-                    Matcher matcher = pattern.matcher(memory);
-                    while (matcher.find()) {
-                        String result = matcher.group();
-                        result = result.substring(0, result.length() - 3);
-                        long aLong = Long.parseLong(result);
-                        if (aLong > max) {
-                            max = aLong;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+           while (process.isAlive()) {
+               try {
+                   Process countUsedMemoryProcess = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
+                   String memory = StreamUtil.getOutPut(countUsedMemoryProcess.getInputStream());
+                   long aLong = 0;
+                   try{
+                       aLong = Long.parseLong(memory);
+                   }catch (Exception e){
+                        continue;
+                   }
+                   if (aLong > max) {
+                       max = aLong;
+                   }
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
             System.out.println("limit:" + max);
-        });*/
-        /*thread.setPriority(10);
+        });
+        thread.start();
+        thread.setPriority(10);
+        Thread.sleep(1500);
+        String outPut = StreamUtil.getOutPut(process.getInputStream());
+        System.out.println(outPut);
+
+        /*
         thread.start();*/
 //        System.out.println(getPid(process));
 //        Thread.sleep(15000);
-        Thread thread1 = new Thread(() -> {
+       /* Thread thread1 = new Thread(() -> {
           StreamUtil.setInPut(process.getOutputStream(), "/home/ming/Music/1000/input/1.txt");
             System.out.println("阻塞开始:");
             System.out.println(StreamUtil.getOutPut(process.getInputStream()));
             System.out.println("阻塞结束啦");
 
-        });
+        });*/
 
-//        runtime.exec("kill -9 "+process.pid());
 
-        thread1.start();
-//        runtime.exec("kill -9 "+process.pid());
+//        thread1.start();
         int exit = 0;
         try {
             exit = process.waitFor();

@@ -11,7 +11,7 @@ import java.util.List;
 public interface JudgeService {
 
 
-    List<String> compile(Integer userId, String sourceCode, String type, Integer problemId);
+    String compile(ProblemResult problemResult);
 
     void execute(ProblemResult problemResult,String userDirPath);
 

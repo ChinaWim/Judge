@@ -77,13 +77,13 @@ public class JudgeConsumer {
                         ProblemResult problemResult = JsonUtil.string2Obj(body, ProblemResult.class);
 
                         //处理重复消费问题
-                        ProblemResult problemResultFormDB = problemService.getProblemResultByRunNum(problemResult.getRunNum());
-                        if (problemResultFormDB != null) {
-                            if (problemResultFormDB.getStatus().equals(JudgeStatusEnum.QUEUING)
-                                    || problemResultFormDB.getStatus().equals(JudgeStatusEnum.COMPILING)
-                                    || problemResultFormDB.getStatus().equals(JudgeStatusEnum.JUDGING)) {
+                        ProblemResult problemResultFromDB = problemService.getProblemResultByRunNum(problemResult.getRunNum());
+                        if (problemResultFromDB != null) {
+                            if (problemResultFromDB.getStatus().equals(JudgeStatusEnum.QUEUING)
+                                    || problemResultFromDB.getStatus().equals(JudgeStatusEnum.COMPILING)
+                                    || problemResultFromDB.getStatus().equals(JudgeStatusEnum.JUDGING)) {
                                 //update compiling
-                                problemResult = problemResultFormDB;
+                                problemResult = problemResultFromDB;
                                 problemResult.setStatus(JudgeStatusEnum.COMPILING.getStatus());
                                 problemService.updateProblemResultById(problemResult);
                             } else {
@@ -93,24 +93,12 @@ public class JudgeConsumer {
                             problemResult.setStatus(JudgeStatusEnum.COMPILING.getStatus());
                             problemService.insertProblemResult(problemResult);
                         }
-
                         //执行编译
-                        List<String> resultList = judgeService.compile(problemResult.getUserId(), problemResult.getSourceCode(),
-                                problemResult.getType(), problemResult.getProblemId());
-                        String compileResult = resultList.get(0);
-                        String userDirPath = resultList.get(1);
+                        String userDirPath = judgeService.compile(problemResult);
 
-                        if (JudgeStatusEnum.COMPILE_SUCCESS.getDesc().equals(compileResult)) {
+                        if (userDirPath != null) {
                             //运行
                             judgeService.execute(problemResult, userDirPath);
-                        } else {
-                            //update compile error
-                            problemResult.setStatus(JudgeStatusEnum.COMPILE_ERROR.getStatus());
-                            problemResult.setErrorMsg(compileResult);
-                            problemService.updateProblemResultById(problemResult);
-                            //add count
-                            problemService.addProblemCountById(problemResult.getProblemId(), JudgeStatusEnum.COMPILE_ERROR);
-                            userService.addCount(problemResult.getUserId(), JudgeStatusEnum.COMPILE_ERROR);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

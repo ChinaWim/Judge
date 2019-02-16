@@ -117,4 +117,28 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+    <update id="addSolutionCountByProblemIdCompIdUserId" parameterType="map">
+    update register set solution_count = solution_count + 1
+    where comp_id = #{compId}
+    and user_id = #{userId}
+    and (select count(id) from problem_result pr
+    where pr.comp_id = #{compId}
+    and pr.problem_id = #{problemId}
+    and pr.status = 1 and pr.user_id = #{userId}) = 0
+    </update>
+
+  <update id="addSubmitCountByCompIdUserId" parameterType="map">
+    update register set submit_count = submit_count + 1
+    where comp_id = #{compId}
+    and user_id = #{userId}
+    </update>
+
+  <update id="addScoreByCompIdUserId" parameterType="map">
+    update register set score = score + #{score}
+    where comp_id = #{compId}
+    and user_id = #{userId}
+    </update>
+
+
 </mapper>

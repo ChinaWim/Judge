@@ -52,4 +52,19 @@ public class StringUtil {
         return new String(newChars);
     }
 
+
+    /**
+     * 限制长度
+     * @param string
+     * @param maxLength
+     * @return
+     */
+    public static  String getLimitLengthByString(String string,int maxLength){
+        if(string == null) {
+            return null;
+        }
+        int length = string.length() > maxLength ? maxLength : string.length();
+        return string.substring(0,length);
+    }
+
 }

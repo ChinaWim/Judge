@@ -35,7 +35,6 @@ public class ServerResponse {
     }
 
 
-
     /**
      * 返回成功json
      *
@@ -130,5 +129,11 @@ public class ServerResponse {
                 ", msg='" + msg + '\'' +
                 ", Data=" + Data +
                 '}';
+    }
+
+
+    public boolean isSuccess() {
+        return this.state == SUCCESS_STATE;
+
     }
 }

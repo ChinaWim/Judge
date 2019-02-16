@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oj.judge.dao.CompetitionProblemMapper" >
+  <resultMap id="BaseResultMap" type="com.oj.judge.entity.CompetitionProblem" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="comp_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="problem_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="score" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ac_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="submit_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, comp_id, problem_id, score, ac_count, submit_count, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from competition_problem
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from competition_problem
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyProperty="id" parameterType="com.oj.judge.entity.CompetitionProblem" >
+    insert into competition_problem (id, comp_id, problem_id, 
+      score, ac_count, submit_count, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{compId,jdbcType=INTEGER}, #{problemId,jdbcType=INTEGER}, 
+      #{score,jdbcType=INTEGER}, #{acCount,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyProperty="id" parameterType="com.oj.judge.entity.CompetitionProblem" >
+    insert into competition_problem
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="compId != null" >
+        comp_id,
+      </if>
+      <if test="problemId != null" >
+        problem_id,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="acCount != null" >
+        ac_count,
+      </if>
+      <if test="submitCount != null" >
+        submit_count,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="compId != null" >
+        #{compId,jdbcType=INTEGER},
+      </if>
+      <if test="problemId != null" >
+        #{problemId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="acCount != null" >
+        #{acCount,jdbcType=INTEGER},
+      </if>
+      <if test="submitCount != null" >
+        #{submitCount,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.oj.judge.entity.CompetitionProblem" >
+    update competition_problem
+    <set >
+      <if test="compId != null" >
+        comp_id = #{compId,jdbcType=INTEGER},
+      </if>
+      <if test="problemId != null" >
+        problem_id = #{problemId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="acCount != null" >
+        ac_count = #{acCount,jdbcType=INTEGER},
+      </if>
+      <if test="submitCount != null" >
+        submit_count = #{submitCount,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oj.judge.entity.CompetitionProblem" >
+    update competition_problem
+    set comp_id = #{compId,jdbcType=INTEGER},
+      problem_id = #{problemId,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      ac_count = #{acCount,jdbcType=INTEGER},
+      submit_count = #{submitCount,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="getScoreByCompIdProblemId" resultType="java.lang.Integer" parameterType="map">
+    select score from competition_problem
+    where comp_id = #{compId}
+    and problem_id = #{problemId}
+
+  </select>
+
+
+  <update id="addAcCountByCompIdProblemId" parameterType="map">
+    update competition_problem set ac_count = ac_count + 1
+    where comp_id = #{compId} and problem_id = #{problemId}
+  </update>
+
+  <update id="addSubmitCountByCompIdProblemId" parameterType="map">
+    update competition_problem set submit_count = submit_count + 1
+    where comp_id = #{compId} and problem_id = #{problemId}
+  </update>
+
+
+
+</mapper>

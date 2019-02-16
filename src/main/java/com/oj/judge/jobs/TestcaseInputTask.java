@@ -66,7 +66,7 @@ public class TestcaseInputTask implements Runnable {
         testcaseResult.setNum(testCaseNum);
         testcaseResult.setProReId(problemResult.getId());
 
-        //计算输出时间任务
+        //计算输出时间和内存任务
         FutureTask<TestcaseResult> task = new FutureTask<>(new TestcaseOutputTask(process, testcaseResult));
         new Thread(task).start();
 

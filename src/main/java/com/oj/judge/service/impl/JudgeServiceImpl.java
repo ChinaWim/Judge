@@ -6,12 +6,12 @@ import com.oj.judge.common.LanguageEnum;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.entity.TestcaseResult;
-import com.oj.judge.service.JudgeService;
-import com.oj.judge.service.ProblemService;
-import com.oj.judge.service.UserService;
+import com.oj.judge.response.ServerResponse;
+import com.oj.judge.service.*;
 import com.oj.judge.jobs.TestcaseInputTask;
 import com.oj.judge.utils.FileUtil;
 import com.oj.judge.utils.StreamUtil;
+import com.oj.judge.utils.StringUtil;
 import com.oj.judge.utils.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,6 @@ public class JudgeServiceImpl implements JudgeService {
     @Value("${file.server.testcase.dir}")
     private String fileServerTestcaseDir;
 
-
     private static Runtime runtime = Runtime.getRuntime();
 
     @Autowired
@@ -42,6 +41,12 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RegisterService registerService;
+
+    @Autowired
+    private CompetitionProblemService competitionProblemService;
 
 
     //当一个用户提交同一个题目很多次答案时候，由于并发问题，可能在执行编译的时候，文件夹被另一个线程删除了，发出NotFoundException
@@ -51,32 +56,47 @@ public class JudgeServiceImpl implements JudgeService {
     //解决办法三：文件夹＋时间戳，推荐 (已选择)
 
     @Override
-    public List<String> compile(Integer userId, String sourceCode, String type, Integer problemId) {
-        String problemDirPath = fileServerTestcaseDir + "/" + problemId;
-        String userDirPath = problemDirPath + "/" + UUIDUtil.getUUIDByTime();
-        String ext = LanguageEnum.getExtByType(type);
-        FileUtil.saveFile(sourceCode, userDirPath + "/Main." + ext);
+    public String compile(ProblemResult problemResult) {
+        String problemDirPath = fileServerTestcaseDir + "/" + problemResult.getProblemId();
+        String userDirPath = problemDirPath + "/" + UUIDUtil.createByTime();
+        String ext = LanguageEnum.getExtByType(problemResult.getType());
+        FileUtil.saveFile(problemResult.getSourceCode(), userDirPath + "/Main." + ext);
 
-        List<String> result = new ArrayList<>();
+
+        if (problemResult.getCompId() != null) {
+            //add  submitCount
+            registerService.addSubmitCountByCompIdUserId(problemResult.getCompId(), problemResult.getUserId());
+            competitionProblemService.addSubmitCountByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
+        }
+
         String compileErrorOutput = null;
         try {
-            Process process = runtime.exec(CmdConst.compileCmd(type, userDirPath));
+            Process process = runtime.exec(CmdConst.compileCmd(problemResult.getType(), userDirPath));
             compileErrorOutput = StreamUtil.getOutPut(process.getErrorStream());
+
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
-            result.add(JudgeStatusEnum.RUNTIME_ERROR.getDesc());
-            return result;
+            String message = "".equals(e.getMessage()) ? "IOException" : e.getMessage();
+            logger.error(message);
+            compileErrorOutput = message;
         }
+
         if (compileErrorOutput == null || "".equals(compileErrorOutput)) {
-            result.add(JudgeStatusEnum.COMPILE_SUCCESS.getDesc());
-            result.add(userDirPath);
+            return userDirPath;
         } else {
-            result.add(compileErrorOutput);
-            result.add(userDirPath);
+            //update compile error
+            compileErrorOutput = StringUtil.getLimitLengthByString(compileErrorOutput, 1000);
+            problemResult.setStatus(JudgeStatusEnum.COMPILE_ERROR.getStatus());
+            problemResult.setErrorMsg(compileErrorOutput);
+            problemService.updateProblemResultById(problemResult);
+
+            //add count
+            problemService.addProblemCountById(problemResult.getProblemId(), JudgeStatusEnum.COMPILE_ERROR);
+            userService.addCount(problemResult.getUserId(), JudgeStatusEnum.COMPILE_ERROR);
             FileUtil.deleteFile(userDirPath);
+            return null;
         }
-        return result;
+
     }
 
     @Override
@@ -92,12 +112,10 @@ public class JudgeServiceImpl implements JudgeService {
         //AC题目增加的点数
         Integer ratingCount = problem.getLevel() * 10;
         Integer goldCount = problem.getLevel();
-        //创建一个新的 题目输出结果实例 去接收testcase结果
-//        ProblemResult problemResult = new ProblemResult();
-//        problemResult.setId(problemResultId);
 
         //执行输入和输出
         File inputFileDir = new File(inputFileDirPath);
+        //todo no 输入
         File[] inputFiles = inputFileDir.listFiles();
         CountDownLatch countDownLatch = new CountDownLatch(inputFiles.length);
         ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
@@ -149,11 +167,22 @@ public class JudgeServiceImpl implements JudgeService {
                 testcaseResultList.add(testcaseResult);
             }
 
+            // ac condition
             if (acCount == testcaseResultList.size()) {
                 status = JudgeStatusEnum.ACCEPTED.getStatus();
                 //user solutionCount
                 userService.addSolutionCountAndGoldCountAndRating(problemResult.getUserId(),
                         problemResult.getProblemId(), goldCount, ratingCount);
+                // competitionProblem register
+                if (problemResult.getCompId() != null) {
+                    competitionProblemService.addAcCountByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
+                    //register add count
+                    ServerResponse addSolutionResponse = registerService.addSolutionCountByProblemIdCompIdUserId(problemResult.getProblemId(), problemResult.getCompId(), problemResult.getUserId());
+                    if (addSolutionResponse.isSuccess()) {
+                        Integer score = competitionProblemService.getScoreByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
+                        registerService.addScoreByCompIdUserId(score, problemResult.getCompId(), problemResult.getUserId());
+                    }
+                }
             }
 
             //insertBatch testcase
@@ -171,8 +200,11 @@ public class JudgeServiceImpl implements JudgeService {
 
         } catch (Exception e) {
             //执行脚本错误或闭锁中断Exception update database
+            String message = StringUtil.getLimitLengthByString(e.getMessage(), 1000);
+            problemResult.setErrorMsg(message);
             problemService.updateProblemResultStatusById(problemResult.getId(), JudgeStatusEnum.RUNTIME_ERROR.getStatus());
-            logger.error("执行脚本错误或闭锁中断Exception",e);
+
+            logger.error("执行脚本错误或闭锁中断Exception", e);
         } finally {
             FileUtil.deleteFile(userDirPath);
         }
