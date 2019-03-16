@@ -16,7 +16,7 @@ public interface CompetitionProblemMapper {
 
     int updateByPrimaryKey(CompetitionProblem record);
 
-    int getScoreByCompIdProblemId(@Param("compId") Integer compId,@Param("problemId")  Integer problemId);
+    Integer getScoreByCompIdProblemId(@Param("compId") Integer compId,@Param("problemId")  Integer problemId);
 
     int addAcCountByCompIdProblemId(@Param("compId") Integer compId,@Param("problemId")  Integer problemId);
 

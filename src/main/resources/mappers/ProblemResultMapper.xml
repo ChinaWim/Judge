@@ -7,6 +7,7 @@
       <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="problem_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="comp_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="comp_score" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="run_num" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="type" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -19,7 +20,7 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_id, problem_id, comp_id, run_num, status, type, time, memory, error_msg,
+    id, user_id, problem_id, comp_id, comp_score, run_num, status, type, time, memory, error_msg,
     source_code, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -34,11 +35,11 @@
   </delete>
   <insert id="insert" keyProperty="id" parameterType="com.oj.judge.entity.ProblemResult" >
     insert into problem_result (id, user_id, problem_id,
-      comp_id, run_num, status,
+      comp_id, comp_score, run_num, status,
       type, time, memory, error_msg,
       source_code, create_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{problemId,jdbcType=INTEGER},
-      #{compId,jdbcType=INTEGER}, #{runNum,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+      #{compId,jdbcType=INTEGER},#{compScore,jdbcType=INTEGER}, #{runNum,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
       #{type,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT}, #{memory,jdbcType=BIGINT}, #{errorMsg,jdbcType=VARCHAR},
       #{sourceCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}}
       )
@@ -57,6 +58,9 @@
       </if>
       <if test="compId != null" >
         comp_id,
+      </if>
+      <if test="compScore != null" >
+        comp_score,
       </if>
       <if test="runNum != null" >
         run_num,
@@ -96,6 +100,9 @@
       <if test="compId != null" >
         #{compId,jdbcType=INTEGER},
       </if>
+      <if test="compScore != null" >
+        #{compScore,jdbcType=INTEGER},
+      </if>
       <if test="runNum != null" >
         #{runNum,jdbcType=VARCHAR},
       </if>
@@ -134,6 +141,9 @@
       <if test="compId != null" >
         comp_id = #{compId,jdbcType=INTEGER},
       </if>
+      <if test="compScore != null" >
+        comp_score = #{compScore,jdbcType=INTEGER},
+      </if>
       <if test="runNum != null" >
         run_num = #{runNum,jdbcType=VARCHAR},
       </if>
@@ -167,6 +177,7 @@
     set user_id = #{userId,jdbcType=INTEGER},
       problem_id = #{problemId,jdbcType=INTEGER},
       comp_id = #{compId,jdbcType=INTEGER},
+      comp_score = #{compScore,jdbcType=INTEGER},
       run_num = #{runNum,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       type = #{type,jdbcType=VARCHAR},
@@ -194,10 +205,21 @@
     where run_num = #{runNum}
   </select>
 
+  <select id="getTotalScoreById" resultType="java.lang.Integer" parameterType="map">
+  select sum(score) from
+    (select max(comp_score) score from problem_result pr
+                where user_id = #{userId} and comp_id = #{compId} group by problem_id) as t;
+  </select>
 
   <update id="updateProblemResultStatus" parameterType="int">
     update problem_result
     set status = #{status}
+    where id = #{problemResultId}
+  </update>
+
+  <update id="updateCompScoreById" parameterType="map">
+  update problem_result
+    set comp_score = #{compScore}
     where id = #{problemResultId}
   </update>
 

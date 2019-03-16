@@ -134,4 +134,15 @@ public class ProblemServiceImpl implements ProblemService {
     public int countProblemResult(Integer userId, Integer problemId,Integer status) {
         return problemResultMapper.countByUserIdProblemIdStatus(userId,problemId,status);
     }
+
+    @Override
+    public ServerResponse addCompScoreById(Integer compScore, Integer problemResultId) {
+        int effect = problemResultMapper.updateCompScoreById(compScore,problemResultId);
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
+    }
+
+    @Override
+    public Integer getTotalScoreById(Integer userId, Integer compId) {
+        return  problemResultMapper.getTotalScoreById(userId,compId);
+    }
 }

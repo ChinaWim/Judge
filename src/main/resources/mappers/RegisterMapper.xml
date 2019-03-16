@@ -133,12 +133,11 @@
     where comp_id = #{compId}
     and user_id = #{userId}
     </update>
-
-  <update id="addScoreByCompIdUserId" parameterType="map">
-    update register set score = score + #{score}
+  <update id="updateScoreByCompIdUserId" parameterType="map">
+    update register set score = #{score}
     where comp_id = #{compId}
     and user_id = #{userId}
-    </update>
+  </update>
 
 
 </mapper>

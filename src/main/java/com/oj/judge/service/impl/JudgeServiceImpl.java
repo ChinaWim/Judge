@@ -5,6 +5,7 @@ import com.oj.judge.common.JudgeStatusEnum;
 import com.oj.judge.common.LanguageEnum;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
+import com.oj.judge.entity.Register;
 import com.oj.judge.entity.TestcaseResult;
 import com.oj.judge.response.ServerResponse;
 import com.oj.judge.service.*;
@@ -115,7 +116,6 @@ public class JudgeServiceImpl implements JudgeService {
 
         //执行输入和输出
         File inputFileDir = new File(inputFileDirPath);
-        //todo no 输入
         File[] inputFiles = inputFileDir.listFiles();
         CountDownLatch countDownLatch = new CountDownLatch(inputFiles.length);
         ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
@@ -177,11 +177,21 @@ public class JudgeServiceImpl implements JudgeService {
                 if (problemResult.getCompId() != null) {
                     competitionProblemService.addAcCountByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
                     //register add count
-                    ServerResponse addSolutionResponse = registerService.addSolutionCountByProblemIdCompIdUserId(problemResult.getProblemId(), problemResult.getCompId(), problemResult.getUserId());
-                    if (addSolutionResponse.isSuccess()) {
-                        Integer score = competitionProblemService.getScoreByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
-                        registerService.addScoreByCompIdUserId(score, problemResult.getCompId(), problemResult.getUserId());
-                    }
+                    registerService.addSolutionCountByProblemIdCompIdUserId(problemResult.getProblemId(), problemResult.getCompId(), problemResult.getUserId());
+                }
+            }
+
+
+            //record competition score
+           if (problemResult.getCompId() != null) {
+                Integer score = competitionProblemService.getScoreByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
+                if (score != null) {
+                    score = (int) ((acCount * 1.0 / testcaseResultList.size()) * score);
+                    problemService.addCompScoreById(score,problemResult.getId());
+
+                    //更新总分
+                    Integer totalScore = problemService.getTotalScoreById(problemResult.getUserId(), problemResult.getCompId());
+                    registerService.updateScore(totalScore,problemResult.getCompId(),problemResult.getUserId());
                 }
             }
 

@@ -12,6 +12,6 @@ public interface RegisterService {
 
     ServerResponse addSubmitCountByCompIdUserId(Integer compId, Integer userId);
 
-    ServerResponse addScoreByCompIdUserId(Integer score, Integer compId, Integer userId);
+    ServerResponse updateScore(Integer score,Integer compId, Integer userId);
 
 }

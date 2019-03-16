@@ -39,9 +39,6 @@ public class JudgeConsumer {
     private ProblemService problemService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private Environment environment;
 
     private static DefaultMQPushConsumer pushConsumer;
@@ -79,9 +76,9 @@ public class JudgeConsumer {
                         //处理重复消费问题
                         ProblemResult problemResultFromDB = problemService.getProblemResultByRunNum(problemResult.getRunNum());
                         if (problemResultFromDB != null) {
-                            if (problemResultFromDB.getStatus().equals(JudgeStatusEnum.QUEUING)
-                                    || problemResultFromDB.getStatus().equals(JudgeStatusEnum.COMPILING)
-                                    || problemResultFromDB.getStatus().equals(JudgeStatusEnum.JUDGING)) {
+                            if (problemResultFromDB.getStatus().equals(JudgeStatusEnum.QUEUING.getStatus())
+                                    || problemResultFromDB.getStatus().equals(JudgeStatusEnum.COMPILING.getStatus())
+                                    || problemResultFromDB.getStatus().equals(JudgeStatusEnum.JUDGING.getStatus())) {
                                 //update compiling
                                 problemResult = problemResultFromDB;
                                 problemResult.setStatus(JudgeStatusEnum.COMPILING.getStatus());

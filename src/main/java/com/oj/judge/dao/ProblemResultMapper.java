@@ -27,4 +27,8 @@ public interface ProblemResultMapper {
     int countByUserIdProblemIdStatus(@Param("userId") Integer userId,@Param("problemId") Integer problemId,@Param("status")Integer status);
 
     ProblemResult getProblemResultByRunNum(String runNum);
+
+    int updateCompScoreById(@Param("compScore")Integer compScore, @Param("problemResultId") Integer problemResultId);
+
+    Integer getTotalScoreById(@Param("userId") Integer userId,@Param("compId") Integer compId);
 }

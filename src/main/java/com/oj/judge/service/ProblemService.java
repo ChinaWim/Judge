@@ -5,6 +5,7 @@ import com.oj.judge.common.JudgeStatusEnum;
 import com.oj.judge.entity.Problem;
 import com.oj.judge.entity.ProblemResult;
 import com.oj.judge.entity.TestcaseResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -34,4 +35,7 @@ public interface ProblemService {
 
     int countProblemResult(Integer userId,Integer problemId,Integer status);
 
+    ServerResponse addCompScoreById(Integer compScore,Integer problemResultId);
+
+    Integer getTotalScoreById( Integer userId, Integer compId);
 }

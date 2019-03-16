@@ -86,6 +86,7 @@ public class TestcaseInputTask implements Runnable {
             testcaseResult.setStatus(JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getStatus());
             resultMap.put(testCaseNum, testcaseResult);
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage());
 
             testcaseResult.setStatus(JudgeStatusEnum.RUNTIME_ERROR.getStatus());
