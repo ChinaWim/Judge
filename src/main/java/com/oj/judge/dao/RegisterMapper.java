@@ -22,4 +22,6 @@ public interface RegisterMapper {
     int addSubmitCountByCompIdUserId(@Param("compId") Integer compId, @Param("userId") Integer userId);
 
     int updateScoreByCompIdUserId(@Param("score") Integer score,@Param("compId") Integer compId, @Param("userId") Integer userId);
+
+    int addAcCountByCompIdUserId(@Param("compId") Integer compId, @Param("userId") Integer userId);
 }

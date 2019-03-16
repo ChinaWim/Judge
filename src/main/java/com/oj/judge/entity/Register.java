@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Register implements Serializable {
+
+    private static final long serialVersionUID = 401827306166537768L;
+
     private Integer id;
 
     private Integer userId;
@@ -14,13 +17,15 @@ public class Register implements Serializable {
 
     private Integer submitCount;
 
+    private Integer registerCount;
+
     private Integer score;
 
     private Date createTime;
 
     private Date updateTime;
 
-    public Register(Integer id, Integer userId, Integer compId, Integer solutionCount, Integer submitCount, Integer score, Date createTime, Date updateTime) {
+    public Register(Integer id, Integer userId, Integer compId, Integer solutionCount, Integer submitCount, Integer score, Date createTime, Date updateTime, Integer registerCount) {
         this.id = id;
         this.userId = userId;
         this.compId = compId;
@@ -29,6 +34,7 @@ public class Register implements Serializable {
         this.score = score;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.registerCount = registerCount;
     }
 
     public Register() {
@@ -99,6 +105,18 @@ public class Register implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Integer getRegisterCount() {
+        return registerCount;
+    }
+
+    public void setRegisterCount(Integer registerCount) {
+        this.registerCount = registerCount;
+    }
+
     @Override
     public String toString() {
         return "Register{" +
@@ -107,6 +125,7 @@ public class Register implements Serializable {
                 ", compId=" + compId +
                 ", solutionCount=" + solutionCount +
                 ", submitCount=" + submitCount +
+                ", registerCount=" + registerCount +
                 ", score=" + score +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

@@ -33,6 +33,12 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
+    public ServerResponse addAcCountByCompIdUserId(Integer compId, Integer userId) {
+        int effect = registerMapper.addAcCountByCompIdUserId(compId, userId);
+        return effect > 0 ? ServerResponse.success() : ServerResponse.fail();
+    }
+
+    @Override
     public ServerResponse updateScore(Integer score, Integer compId, Integer userId) {
         int effect = registerMapper.updateScoreByCompIdUserId(score,compId,userId);
         return effect > 0 ? ServerResponse.success() : ServerResponse.fail();

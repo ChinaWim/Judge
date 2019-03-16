@@ -177,6 +177,7 @@ public class JudgeServiceImpl implements JudgeService {
                 if (problemResult.getCompId() != null) {
                     competitionProblemService.addAcCountByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
                     //register add count
+                    registerService.addAcCountByCompIdUserId(problemResult.getCompId(),problemResult.getUserId());
                     registerService.addSolutionCountByProblemIdCompIdUserId(problemResult.getProblemId(), problemResult.getCompId(), problemResult.getUserId());
                 }
             }
