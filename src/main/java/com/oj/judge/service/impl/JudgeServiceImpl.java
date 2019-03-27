@@ -60,7 +60,8 @@ public class JudgeServiceImpl implements JudgeService {
     public String compile(ProblemResult problemResult) {
         String problemDirPath = fileServerTestcaseDir + "/" + problemResult.getProblemId();
         String userDirPath = problemDirPath + "/" + UUIDUtil.createByTime();
-        String ext = LanguageEnum.getExtByType(problemResult.getType());
+        LanguageEnum languageEnum = LanguageEnum.getEnumByType(problemResult.getType());
+        String ext = languageEnum.getExt();
         FileUtil.saveFile(problemResult.getSourceCode(), userDirPath + "/Main." + ext);
 
 
@@ -71,15 +72,18 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         String compileErrorOutput = null;
-        try {
-            Process process = runtime.exec(CmdConst.compileCmd(problemResult.getType(), userDirPath));
-            compileErrorOutput = StreamUtil.getOutPut(process.getErrorStream());
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            String message = "".equals(e.getMessage()) ? "IOException" : e.getMessage();
-            logger.error(message);
-            compileErrorOutput = message;
+        if (languageEnum.isRequiredCompile()) {
+            try {
+                Process process = runtime.exec(CmdConst.compileCmd(problemResult.getType(), userDirPath));
+                compileErrorOutput = StreamUtil.getOutPut(process.getErrorStream());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                String message = "".equals(e.getMessage()) ? "IOException" : e.getMessage();
+                logger.error(message);
+                compileErrorOutput = message;
+            }
         }
 
         if (compileErrorOutput == null || "".equals(compileErrorOutput)) {
