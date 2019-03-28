@@ -112,9 +112,10 @@ public class TestcaseInputTask implements Runnable {
                 testcaseResult.setStatus(JudgeStatusEnum.TIME_LIMIT_EXCEEDED.getStatus());
                 return;
             }
-            /*if (problem.getMemory().longValue() < testcaseResult.getMemory().longValue()) {
+            if (problem.getMemory() < testcaseResult.getMemory()) {
+                testcaseResult.setStatus(JudgeStatusEnum.MEMORY_LIMIT_EXCEEDED.getStatus());
                 return;
-            }*/
+            }
             String answerOutPut = StreamUtil.getOutPut(new FileInputStream(outputFile));
             String userOutput = testcaseResult.getUserOutput();
 

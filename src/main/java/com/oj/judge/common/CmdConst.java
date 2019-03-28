@@ -75,7 +75,7 @@ public class CmdConst {
             }
         } else if (LanguageEnum.PYTHON3.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
-                builder = new ProcessBuilder("python3", dir, "/Main.py3");
+                builder = new ProcessBuilder("python3", dir + "/Main.py3");
             } else {
                 builder = new ProcessBuilder("python3", "Main.py3");
             }
