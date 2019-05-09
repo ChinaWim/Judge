@@ -73,7 +73,7 @@ public class JudgeConsumer {
                         logger.info("{},消费body为{}:", Thread.currentThread().getName(), body);
                         ProblemResult problemResult = JsonUtil.string2Obj(body, ProblemResult.class);
 
-                        //处理重复消费问题
+                        //处理重复消费问题保持幂等
                         ProblemResult problemResultFromDB = problemService.getProblemResultByRunNum(problemResult.getRunNum());
                         if (problemResultFromDB != null) {
                             if (problemResultFromDB.getStatus().equals(JudgeStatusEnum.QUEUING.getStatus())

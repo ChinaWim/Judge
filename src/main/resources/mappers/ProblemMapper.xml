@@ -6,6 +6,7 @@
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="content" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="html_content" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="input_desc" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="output_desc" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="testcase_input" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -27,7 +28,7 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, content, input_desc, output_desc, testcase_input, testcase_output, level, 
+    id, name, content,html_content, input_desc, output_desc, testcase_input, testcase_output, level,
     submit_count, ac_count, tle_count, pe_count, me_count, re_count, ce_count, wa_count, 
     time, memory, flag, create_time, update_time
   </sql>
@@ -42,7 +43,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyProperty="id" parameterType="com.oj.judge.entity.Problem" >
-    insert into problem (id, name, content, 
+    insert into problem (id, name, content, html_content,
       input_desc, output_desc, testcase_input, 
       testcase_output, level, submit_count, 
       ac_count, tle_count, pe_count, 
@@ -50,7 +51,7 @@
       wa_count, time, memory, 
       flag, create_time
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{htmlContent,jdbcType=VARCHAR},
       #{inputDesc,jdbcType=VARCHAR}, #{outputDesc,jdbcType=VARCHAR}, #{testcaseInput,jdbcType=VARCHAR}, 
       #{testcaseOutput,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{submitCount,jdbcType=INTEGER}, 
       #{acCount,jdbcType=INTEGER}, #{tleCount,jdbcType=INTEGER}, #{peCount,jdbcType=INTEGER}, 
@@ -70,6 +71,9 @@
       </if>
       <if test="content != null" >
         content,
+      </if>
+      <if test="htmlContent != null" >
+        html_content,
       </if>
       <if test="inputDesc != null" >
         input_desc,
@@ -133,6 +137,9 @@
       <if test="content != null" >
         #{content,jdbcType=VARCHAR},
       </if>
+      <if test="htmlContent != null" >
+        #{htmlContent,jdbcType=VARCHAR},
+      </if>
       <if test="inputDesc != null" >
         #{inputDesc,jdbcType=VARCHAR},
       </if>
@@ -195,6 +202,9 @@
       <if test="content != null" >
         content = #{content,jdbcType=VARCHAR},
       </if>
+      <if test="htmlContent != null" >
+        html_content = #{htmlContent,jdbcType=VARCHAR},
+      </if>
       <if test="inputDesc != null" >
         input_desc = #{inputDesc,jdbcType=VARCHAR},
       </if>
@@ -253,6 +263,7 @@
     update problem
     set name = #{name,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
+      html_content = #{htmlContent,jdbcType=VARCHAR},
       input_desc = #{inputDesc,jdbcType=VARCHAR},
       output_desc = #{outputDesc,jdbcType=VARCHAR},
       testcase_input = #{testcaseInput,jdbcType=VARCHAR},

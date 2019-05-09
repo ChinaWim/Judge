@@ -10,7 +10,7 @@ spring:
   datasource:
     druid:
       username: root
-      password: 47218382
+      password: root
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://localhost:3306/ojdb?useUnicode=true&characterEncoding=UTF-8&useSSL=false
       max-active: 50

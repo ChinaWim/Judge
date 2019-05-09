@@ -14,6 +14,7 @@ import com.oj.judge.utils.FileUtil;
 import com.oj.judge.utils.StreamUtil;
 import com.oj.judge.utils.StringUtil;
 import com.oj.judge.utils.UUIDUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,12 +119,13 @@ public class JudgeServiceImpl implements JudgeService {
         Integer ratingCount = problem.getLevel() * 10;
         Integer goldCount = problem.getLevel();
 
-        //执行输入和输出
-        File inputFileDir = new File(inputFileDirPath);
-        File[] inputFiles = inputFileDir.listFiles();
-        CountDownLatch countDownLatch = new CountDownLatch(inputFiles.length);
-        ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
         try {
+            //执行输入和输出
+            File inputFileDir = new File(inputFileDirPath);
+            File[] inputFiles = inputFileDir.listFiles();
+            CountDownLatch countDownLatch = new CountDownLatch(inputFiles.length);
+            ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
+
             for (File inputFile : inputFiles) {
                 ProcessBuilder builder = CmdConst.executeCmd(problemResult.getType(), userDirPath);
                 Process process = builder.start();
@@ -181,22 +183,22 @@ public class JudgeServiceImpl implements JudgeService {
                 if (problemResult.getCompId() != null) {
                     competitionProblemService.addAcCountByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
                     //register add count
-                    registerService.addAcCountByCompIdUserId(problemResult.getCompId(),problemResult.getUserId());
+                    registerService.addAcCountByCompIdUserId(problemResult.getCompId(), problemResult.getUserId());
                     registerService.addSolutionCountByProblemIdCompIdUserId(problemResult.getProblemId(), problemResult.getCompId(), problemResult.getUserId());
                 }
             }
 
 
             //record competition score
-           if (problemResult.getCompId() != null) {
+            if (problemResult.getCompId() != null) {
                 Integer score = competitionProblemService.getScoreByCompIdProblemId(problemResult.getCompId(), problemResult.getProblemId());
                 if (score != null) {
                     score = (int) ((acCount * 1.0 / testcaseResultList.size()) * score);
-                    problemService.addCompScoreById(score,problemResult.getId());
+                    problemService.addCompScoreById(score, problemResult.getId());
 
                     //更新总分
                     Integer totalScore = problemService.getTotalScoreById(problemResult.getUserId(), problemResult.getCompId());
-                    registerService.updateScore(totalScore,problemResult.getCompId(),problemResult.getUserId());
+                    registerService.updateScore(totalScore, problemResult.getCompId(), problemResult.getUserId());
                 }
             }
 
@@ -214,7 +216,7 @@ public class JudgeServiceImpl implements JudgeService {
 
 
         } catch (Exception e) {
-            //执行脚本错误或闭锁中断Exception update database
+            //执行脚本错误或没有测试用例或闭锁中断Exception (update database
             String message = StringUtil.getLimitLengthByString(e.getMessage(), 1000);
             problemResult.setErrorMsg(message);
             problemService.updateProblemResultStatusById(problemResult.getId(), JudgeStatusEnum.RUNTIME_ERROR.getStatus());

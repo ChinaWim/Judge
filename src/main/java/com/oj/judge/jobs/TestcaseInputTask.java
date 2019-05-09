@@ -119,6 +119,7 @@ public class TestcaseInputTask implements Runnable {
             String answerOutPut = StreamUtil.getOutPut(new FileInputStream(outputFile));
             String userOutput = testcaseResult.getUserOutput();
 
+            //去除最右端多余字符
             answerOutPut = StringUtil.rTrim(answerOutPut);
             userOutput = StringUtil.rTrim(userOutput);
 
