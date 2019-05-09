@@ -94,7 +94,7 @@ public class TestcaseInputTask implements Runnable {
         } finally {
             //关闭子进程
             Stream<ProcessHandle> descendants = process.descendants();
-            descendants.forEach(p -> p.destroyForcibly());
+            descendants.forEach(ProcessHandle::destroyForcibly);
             countDownLatch.countDown();
         }
     }
